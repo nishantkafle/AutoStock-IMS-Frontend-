@@ -28,3 +28,12 @@ export async function getCustomerById(id) {
     });
     return response.data;
 }
+
+//  Search customers by name, phone, ID or vehicle number
+export async function searchCustomers(keyword) {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(`${API}/customers/search?keyword=${keyword}`, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+}

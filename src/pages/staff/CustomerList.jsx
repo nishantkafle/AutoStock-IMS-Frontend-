@@ -25,22 +25,25 @@ export default function CustomerList() {
         }
     }
 
-    async function handleSearch(e) {
-        e.preventDefault();
-        if (!keyword.trim()) {
-            fetchCustomers();
-            return;
-        }
-        try {
-            setLoading(true);
-            const result = await searchCustomers(keyword);
-            setCustomers(result.data || []);
-        } catch (err) {
-            setError("Search failed");
-        } finally {
-            setLoading(false);
-        }
+   async function handleSearch(e) {
+    e.preventDefault();
+    if (!keyword.trim()) {
+        fetchCustomers();
+        return;
     }
+    try {
+        setLoading(true);
+        setError("");
+        setCustomers([]);
+        const result = await searchCustomers(keyword);
+        setCustomers(result.data || []);
+    } catch (err) {
+        setError("No customers found");
+        setCustomers([]);
+    } finally {
+        setLoading(false);
+    }
+}
 
     return (
         <div>
@@ -132,7 +135,7 @@ export default function CustomerList() {
                     <table style={{ width: "100%", borderCollapse: "collapse" }}>
                         <thead>
                             <tr style={{ background: "var(--card-border)" }}>
-                                {["Full Name", "Email", "Phone", "Vehicles", "Registered", "Action"].map(h => (
+                                {["ID","Full Name", "Email", "Phone", "Vehicles", "Registered", "Action"].map(h => (
                                     <th key={h} style={{
                                         padding: "10px 16px", textAlign: "left",
                                         fontSize: "12px", fontWeight: 600,
@@ -150,6 +153,9 @@ export default function CustomerList() {
                                     borderTop: "1px solid var(--card-border)",
                                     background: i % 2 === 0 ? "transparent" : "var(--card-bg)"
                                 }}>
+                                    <td style={{ padding: "12px 16px", fontSize: "12px", color: "var(--text-muted)", fontFamily: "monospace" }}>
+                                              {c.id.substring(0, 8)}...
+                                    </td>
                                     <td style={{ padding: "12px 16px", fontSize: "14px", fontWeight: 500 }}>
                                         {c.fullName}
                                     </td>
