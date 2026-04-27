@@ -3,6 +3,7 @@ import DashboardLayout from "../../components/DashboardLayout";
 import StatCard from "../../components/StatCard";
 import Placeholder from "../../components/Placeholder";
 import Profile from "../profile/Profile";
+import Vendors from "./Vendors";
 
 // Admin overview - shows key business numbers
 function Overview() {
@@ -149,7 +150,7 @@ export default function AdminDashboard({ theme, toggleTheme }) {
         path="/vendors"
         element={
           <Page title="Vendors">
-            <Placeholder name="Vendor Management" />
+            <Vendors />
           </Page>
         }
       />
