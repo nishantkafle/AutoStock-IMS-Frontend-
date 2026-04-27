@@ -4,6 +4,9 @@ import DashboardLayout from "../../components/DashboardLayout";
 import StatCard from "../../components/StatCard";
 import Placeholder from "../../components/Placeholder";
 import Profile from "../profile/Profile";
+import RegisterCustomer from "./RegisterCustomer";
+import CustomerList from "./CustomerList";
+import CustomerDetails from "./CustomerDetails";
 
 function Overview() {
   const { user } = useAuth();
@@ -96,21 +99,22 @@ export default function StaffDashboard({ theme, toggleTheme }) {
         }
       />
       <Route
-        path="/customers"
-        element={
-          <Page title="Customer List">
-            <Placeholder name="Customer List" />
-          </Page>
-        }
-      />
+    path="/customers"
+    element={
+        <Page title="Customer List">
+            <CustomerList />
+        </Page>
+    }
+/>
       <Route
-        path="/register-customer"
-        element={
-          <Page title="Register Customer">
-            <Placeholder name="Register Customer" />
-          </Page>
-        }
-      />
+    path="/register-customer"
+    element={
+        <Page title="Register Customer">
+            <RegisterCustomer />
+        </Page>
+    }
+/>
+      
       <Route
         path="/vehicles"
         element={
@@ -144,6 +148,14 @@ export default function StaffDashboard({ theme, toggleTheme }) {
         }
       />
       <Route
+    path="/customers/:id"
+    element={
+        <Page title="Customer Details">
+            <CustomerDetails />
+        </Page>
+    }
+/>
+      <Route
         path="/reports"
         element={
           <Page title="Customer Reports">
@@ -160,5 +172,6 @@ export default function StaffDashboard({ theme, toggleTheme }) {
         }
       />
     </Routes>
+    
   );
 }
