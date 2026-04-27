@@ -7,6 +7,8 @@ import Profile from "../profile/Profile";
 import RegisterCustomer from "./RegisterCustomer";
 import CustomerList from "./CustomerList";
 import CustomerDetails from "./CustomerDetails";
+import AppointmentsAdmin from "../admin/AppointmentsAdmin";
+import PartRequestsAdmin from "../admin/PartRequestsAdmin";
 
 function Overview() {
   const { user } = useAuth();
@@ -98,23 +100,32 @@ export default function StaffDashboard({ theme, toggleTheme }) {
           </Page>
         }
       />
+
       <Route
-    path="/customers"
-    element={
-        <Page title="Customer List">
+        path="/customers"
+        element={
+          <Page title="Customer List">
             <CustomerList />
-        </Page>
-    }
-/>
+          </Page>
+        }
+      />
       <Route
-    path="/register-customer"
-    element={
-        <Page title="Register Customer">
+        path="/register-customer"
+        element={
+          <Page title="Register Customer">
             <RegisterCustomer />
-        </Page>
-    }
-/>
-      
+          </Page>
+        }
+      />
+      <Route
+        path="/customers/:id"
+        element={
+          <Page title="Customer Details">
+            <CustomerDetails />
+          </Page>
+        }
+      />
+
       <Route
         path="/vehicles"
         element={
@@ -131,11 +142,13 @@ export default function StaffDashboard({ theme, toggleTheme }) {
           </Page>
         }
       />
+
+      {/* wired to real components */}
       <Route
         path="/appointments"
         element={
           <Page title="Appointments">
-            <Placeholder name="Appointments" />
+            <AppointmentsAdmin />
           </Page>
         }
       />
@@ -143,18 +156,11 @@ export default function StaffDashboard({ theme, toggleTheme }) {
         path="/part-requests"
         element={
           <Page title="Part Requests">
-            <Placeholder name="Part Requests" />
+            <PartRequestsAdmin />
           </Page>
         }
       />
-      <Route
-    path="/customers/:id"
-    element={
-        <Page title="Customer Details">
-            <CustomerDetails />
-        </Page>
-    }
-/>
+
       <Route
         path="/reports"
         element={
@@ -172,6 +178,5 @@ export default function StaffDashboard({ theme, toggleTheme }) {
         }
       />
     </Routes>
-    
   );
 }
