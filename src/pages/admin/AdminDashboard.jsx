@@ -7,7 +7,7 @@ import StaffManagement from "./StaffManagement";
 import PartsManagement from "./PartsManagement";
 import AppointmentsAdmin from "./AppointmentsAdmin";
 import PartRequestsAdmin from "./PartRequestsAdmin";
-
+import Vendors from "./Vendors";
 // Admin overview cards
 function Overview() {
   return (
@@ -113,7 +113,7 @@ export default function AdminDashboard({ theme, toggleTheme }) {
         path="/vendors"
         element={
           <Page title="Vendors">
-            <Placeholder name="Vendor Management" />
+            <Vendors />
           </Page>
         }
       />
