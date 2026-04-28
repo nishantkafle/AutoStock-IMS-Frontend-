@@ -9,6 +9,9 @@ import CustomerList from "./CustomerList";
 import CustomerDetails from "./CustomerDetails";
 import AppointmentsAdmin from "../admin/AppointmentsAdmin";
 import PartRequestsAdmin from "../admin/PartRequestsAdmin";
+import SalesInvoices from "./SalesInvoices";
+import CreateInvoice from "./CreateInvoice";
+import InvoiceDetails from "./InvoiceDetails";
 
 function Overview() {
   const { user } = useAuth();
@@ -138,7 +141,23 @@ export default function StaffDashboard({ theme, toggleTheme }) {
         path="/sales"
         element={
           <Page title="Sales & Invoices">
-            <Placeholder name="Sales and Invoices" />
+            <SalesInvoices />
+          </Page>
+        }
+      />
+      <Route
+        path="/sales/new"
+        element={
+          <Page title="Create Invoice">
+            <CreateInvoice />
+          </Page>
+        }
+      />
+      <Route
+        path="/sales/:id"
+        element={
+          <Page title="Invoice Details">
+            <InvoiceDetails />
           </Page>
         }
       />

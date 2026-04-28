@@ -135,7 +135,13 @@ export default function PartsManagement() {
         vendorService.getAll(),
       ]);
       if (partsRes.success) setParts(partsRes.data);
-      if (vendorsRes.success) setVendors(vendorsRes.data);
+      
+      // vendorsRes is an array directly returned from the API
+      if (Array.isArray(vendorsRes)) {
+        setVendors(vendorsRes);
+      } else if (vendorsRes && vendorsRes.success) {
+        setVendors(vendorsRes.data);
+      }
     } catch {
       setMsg({ text: "Failed to load data", ok: false });
     } finally {
@@ -297,6 +303,7 @@ export default function PartsManagement() {
             <thead>
               <tr>
                 {[
+                  "ID",
                   "Name",
                   "Category",
                   "Vendor",
@@ -314,6 +321,9 @@ export default function PartsManagement() {
             <tbody>
               {filtered.map((p) => (
                 <tr key={p.id}>
+                  <td style={{ ...tdStyle, fontFamily: "monospace", fontSize: "13px", color: "var(--text-muted)" }} title={p.id}>
+                    {p.id.split('-')[0]}
+                  </td>
                   <td style={tdStyle}>{p.name}</td>
                   <td style={{ ...tdStyle, color: "var(--text-muted)" }}>
                     {p.category || "-"}
