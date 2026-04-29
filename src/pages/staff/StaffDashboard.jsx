@@ -4,6 +4,14 @@ import DashboardLayout from "../../components/DashboardLayout";
 import StatCard from "../../components/StatCard";
 import Placeholder from "../../components/Placeholder";
 import Profile from "../profile/Profile";
+import RegisterCustomer from "./RegisterCustomer";
+import CustomerList from "./CustomerList";
+import CustomerDetails from "./CustomerDetails";
+import AppointmentsAdmin from "../admin/AppointmentsAdmin";
+import PartRequestsAdmin from "../admin/PartRequestsAdmin";
+import SalesInvoices from "./SalesInvoices";
+import CreateInvoice from "./CreateInvoice";
+import InvoiceDetails from "./InvoiceDetails";
 
 function Overview() {
   const { user } = useAuth();
@@ -95,11 +103,12 @@ export default function StaffDashboard({ theme, toggleTheme }) {
           </Page>
         }
       />
+
       <Route
         path="/customers"
         element={
           <Page title="Customer List">
-            <Placeholder name="Customer List" />
+            <CustomerList />
           </Page>
         }
       />
@@ -107,10 +116,19 @@ export default function StaffDashboard({ theme, toggleTheme }) {
         path="/register-customer"
         element={
           <Page title="Register Customer">
-            <Placeholder name="Register Customer" />
+            <RegisterCustomer />
           </Page>
         }
       />
+      <Route
+        path="/customers/:id"
+        element={
+          <Page title="Customer Details">
+            <CustomerDetails />
+          </Page>
+        }
+      />
+
       <Route
         path="/vehicles"
         element={
@@ -123,15 +141,33 @@ export default function StaffDashboard({ theme, toggleTheme }) {
         path="/sales"
         element={
           <Page title="Sales & Invoices">
-            <Placeholder name="Sales and Invoices" />
+            <SalesInvoices />
           </Page>
         }
       />
       <Route
+        path="/sales/new"
+        element={
+          <Page title="Create Invoice">
+            <CreateInvoice />
+          </Page>
+        }
+      />
+      <Route
+        path="/sales/:id"
+        element={
+          <Page title="Invoice Details">
+            <InvoiceDetails />
+          </Page>
+        }
+      />
+
+      {/* wired to real components */}
+      <Route
         path="/appointments"
         element={
           <Page title="Appointments">
-            <Placeholder name="Appointments" />
+            <AppointmentsAdmin />
           </Page>
         }
       />
@@ -139,10 +175,11 @@ export default function StaffDashboard({ theme, toggleTheme }) {
         path="/part-requests"
         element={
           <Page title="Part Requests">
-            <Placeholder name="Part Requests" />
+            <PartRequestsAdmin />
           </Page>
         }
       />
+
       <Route
         path="/reports"
         element={
