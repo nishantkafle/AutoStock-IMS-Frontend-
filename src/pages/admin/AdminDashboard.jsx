@@ -3,16 +3,13 @@ import DashboardLayout from "../../components/DashboardLayout";
 import StatCard from "../../components/StatCard";
 import Placeholder from "../../components/Placeholder";
 import Profile from "../profile/Profile";
-
-// Admin overview - shows key business numbers
+import StaffManagement from "./StaffManagement";
+import PartsManagement from "./PartsManagement";
+import AppointmentsAdmin from "./AppointmentsAdmin";
+import PartRequestsAdmin from "./PartRequestsAdmin";
+import Vendors from "./Vendors";
+// Admin overview cards
 function Overview() {
-  const stats = [
-    { label: "Revenue - 30d", value: "-", sub: "No data yet" },
-    { label: "Total Sales", value: "-", sub: "No data yet" },
-    { label: "Customers", value: "-", sub: "No data yet" },
-    { label: "Low Stock Alerts", value: "-", sub: "No data yet" },
-  ];
-
   return (
     <div>
       <div style={{ marginBottom: "8px" }}>
@@ -31,7 +28,6 @@ function Overview() {
           Here is what is happening in your business today.
         </p>
       </div>
-
       <div
         style={{
           display: "grid",
@@ -40,77 +36,38 @@ function Overview() {
           marginTop: "24px",
         }}
       >
-        {stats.map((s, i) => (
-          <StatCard key={i} label={s.label} value={s.value} sub={s.sub} />
+        {[
+          { label: "Revenue - 30d", value: "-" },
+          { label: "Total Sales", value: "-" },
+          { label: "Customers", value: "-" },
+          { label: "Low Stock Alerts", value: "-" },
+        ].map((s, i) => (
+          <StatCard key={i} label={s.label} value={s.value} />
         ))}
       </div>
-
-      {/* Recent sales placeholder */}
       <div
         style={{
           marginTop: "24px",
-          display: "grid",
-          gridTemplateColumns: "1fr 340px",
-          gap: "14px",
+          background: "var(--card-bg)",
+          border: "1px solid var(--card-border)",
+          borderRadius: "6px",
+          padding: "22px",
         }}
       >
         <div
           style={{
-            background: "var(--card-bg)",
-            border: "1px solid var(--card-border)",
-            borderRadius: "6px",
-            padding: "22px",
+            fontSize: "12px",
+            fontWeight: 600,
+            textTransform: "uppercase",
+            letterSpacing: "0.5px",
+            color: "var(--text-muted)",
+            marginBottom: "10px",
           }}
         >
-          <div
-            style={{
-              fontSize: "13px",
-              fontWeight: 600,
-              color: "var(--text-muted)",
-              marginBottom: "4px",
-              textTransform: "uppercase",
-              letterSpacing: "0.5px",
-            }}
-          >
-            Revenue Trend
-          </div>
-          <div
-            style={{
-              height: 160,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "var(--text-muted)",
-              fontSize: "13px",
-            }}
-          >
-            Chart will appear once sales data is available
-          </div>
+          Recent Sales
         </div>
-
-        <div
-          style={{
-            background: "var(--card-bg)",
-            border: "1px solid var(--card-border)",
-            borderRadius: "6px",
-            padding: "22px",
-          }}
-        >
-          <div
-            style={{
-              fontSize: "13px",
-              fontWeight: 600,
-              color: "var(--text-muted)",
-              marginBottom: "16px",
-              textTransform: "uppercase",
-              letterSpacing: "0.5px",
-            }}
-          >
-            Recent Sales
-          </div>
-          <div style={{ color: "var(--text-muted)", fontSize: "14px" }}>
-            No sales recorded yet.
-          </div>
+        <div style={{ color: "var(--text-muted)", fontSize: "14px" }}>
+          No sales recorded yet.
         </div>
       </div>
     </div>
@@ -118,7 +75,6 @@ function Overview() {
 }
 
 export default function AdminDashboard({ theme, toggleTheme }) {
-  // Wrap every route in the same layout shell
   function Page({ title, children }) {
     return (
       <DashboardLayout title={title} theme={theme} toggleTheme={toggleTheme}>
@@ -141,7 +97,15 @@ export default function AdminDashboard({ theme, toggleTheme }) {
         path="/inventory"
         element={
           <Page title="Inventory">
-            <Placeholder name="Inventory Management" />
+            <PartsManagement />
+          </Page>
+        }
+      />
+      <Route
+        path="/staff"
+        element={
+          <Page title="Staff & Roles">
+            <StaffManagement />
           </Page>
         }
       />
@@ -149,7 +113,7 @@ export default function AdminDashboard({ theme, toggleTheme }) {
         path="/vendors"
         element={
           <Page title="Vendors">
-            <Placeholder name="Vendor Management" />
+            <Vendors />
           </Page>
         }
       />
@@ -189,7 +153,7 @@ export default function AdminDashboard({ theme, toggleTheme }) {
         path="/appointments"
         element={
           <Page title="Appointments">
-            <Placeholder name="Appointments" />
+            <AppointmentsAdmin />
           </Page>
         }
       />
@@ -197,7 +161,7 @@ export default function AdminDashboard({ theme, toggleTheme }) {
         path="/part-requests"
         element={
           <Page title="Part Requests">
-            <Placeholder name="Part Requests" />
+            <PartRequestsAdmin />
           </Page>
         }
       />
@@ -206,14 +170,6 @@ export default function AdminDashboard({ theme, toggleTheme }) {
         element={
           <Page title="Reviews">
             <Placeholder name="Reviews" />
-          </Page>
-        }
-      />
-      <Route
-        path="/staff"
-        element={
-          <Page title="Staff & Roles">
-            <Placeholder name="Staff Management" />
           </Page>
         }
       />
