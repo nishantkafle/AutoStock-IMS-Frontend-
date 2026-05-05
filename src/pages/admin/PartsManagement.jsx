@@ -1,17 +1,16 @@
 import { useState, useEffect } from "react";
+import { Package } from "lucide-react";
 import { partsService, vendorService } from "../../services/api";
 import Modal from "../../components/Modal";
 import {
   Field,
   Btn,
   Alert,
-  Badge,
   tableStyle,
   thStyle,
   tdStyle,
 } from "../../components/FormElements";
 
-// Empty form state reused for both add and edit
 const emptyForm = {
   vendorId: "",
   name: "",
@@ -21,6 +20,47 @@ const emptyForm = {
   stockQty: "",
   reorderLevel: "10",
 };
+
+// Edit icon
+function EditIcon() {
+  return (
+    <svg
+      width="15"
+      height="15"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+    </svg>
+  );
+}
+
+// Delete icon
+function DeleteIcon() {
+  return (
+    <svg
+      width="15"
+      height="15"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <polyline points="3 6 5 6 21 6" />
+      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+      <path d="M10 11v6" />
+      <path d="M14 11v6" />
+      <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+    </svg>
+  );
+}
 
 function PartForm({ initial = emptyForm, vendors, onSubmit, onClose, saving }) {
   const [form, setForm] = useState(initial);
@@ -75,7 +115,7 @@ function PartForm({ initial = emptyForm, vendors, onSubmit, onClose, saving }) {
         }}
       >
         <Field
-          label="Price"
+          label="Price (Rs.)"
           type="number"
           value={form.price}
           onChange={set("price")}
@@ -135,13 +175,8 @@ export default function PartsManagement() {
         vendorService.getAll(),
       ]);
       if (partsRes.success) setParts(partsRes.data);
-      
-      // vendorsRes is an array directly returned from the API
-      if (Array.isArray(vendorsRes)) {
-        setVendors(vendorsRes);
-      } else if (vendorsRes && vendorsRes.success) {
-        setVendors(vendorsRes.data);
-      }
+      if (Array.isArray(vendorsRes)) setVendors(vendorsRes);
+      else if (vendorsRes?.success) setVendors(vendorsRes.data);
     } catch {
       setMsg({ text: "Failed to load data", ok: false });
     } finally {
@@ -210,19 +245,22 @@ export default function PartsManagement() {
     }
   }
 
-  // Client-side filter on name or category
   const filtered = parts.filter(
     (p) =>
       p.name.toLowerCase().includes(search.toLowerCase()) ||
-      p.category.toLowerCase().includes(search.toLowerCase()),
+      (p.category || "").toLowerCase().includes(search.toLowerCase()),
   );
+
+  // Count low stock items for the subtitle
+  const lowStockCount = parts.filter((p) => p.isLowStock).length;
 
   return (
     <div>
+      {/* Header row */}
       <div
         style={{
           display: "flex",
-          alignItems: "center",
+          alignItems: "flex-start",
           justifyContent: "space-between",
           marginBottom: "24px",
         }}
@@ -235,19 +273,28 @@ export default function PartsManagement() {
               letterSpacing: "-0.4px",
             }}
           >
-            Parts Management
+            Inventory
           </h1>
           <p
             style={{
-              fontSize: "14px",
+              fontSize: "13.5px",
               color: "var(--text-muted)",
-              marginTop: "2px",
+              marginTop: "3px",
             }}
           >
-            Add, edit and remove vehicle parts from inventory
+            {parts.length} parts
+            {lowStockCount > 0 && (
+              <>
+                {" "}
+                &bull;{" "}
+                <span style={{ color: "var(--error)", fontWeight: 600 }}>
+                  {lowStockCount} low stock
+                </span>
+              </>
+            )}
           </p>
         </div>
-        <Btn onClick={() => setShowAdd(true)}>Add Part</Btn>
+        <Btn onClick={() => setShowAdd(true)}>+ Add Part</Btn>
       </div>
 
       {msg.text && <Alert text={msg.text} ok={msg.ok} />}
@@ -256,10 +303,10 @@ export default function PartsManagement() {
       <input
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        placeholder="Search by name or category..."
+        placeholder="Search parts..."
         style={{
           width: "100%",
-          maxWidth: 340,
+          maxWidth: 320,
           padding: "9px 12px",
           border: "1px solid var(--input-border)",
           borderRadius: "4px",
@@ -270,6 +317,7 @@ export default function PartsManagement() {
         }}
       />
 
+      {/* Table card */}
       <div
         style={{
           background: "var(--card-bg)",
@@ -302,16 +350,7 @@ export default function PartsManagement() {
           <table style={tableStyle}>
             <thead>
               <tr>
-                {[
-                  "ID",
-                  "Name",
-                  "Category",
-                  "Vendor",
-                  "Price",
-                  "Stock",
-                  "Status",
-                  "Actions",
-                ].map((h) => (
+                {["Part", "Category", "Price", "Stock", "Actions"].map((h) => (
                   <th key={h} style={thStyle}>
                     {h}
                   </th>
@@ -320,41 +359,209 @@ export default function PartsManagement() {
             </thead>
             <tbody>
               {filtered.map((p) => (
-                <tr key={p.id}>
-                  <td style={{ ...tdStyle, fontFamily: "monospace", fontSize: "13px", color: "var(--text-muted)" }} title={p.id}>
-                    {p.id.split('-')[0]}
-                  </td>
-                  <td style={tdStyle}>{p.name}</td>
-                  <td style={{ ...tdStyle, color: "var(--text-muted)" }}>
-                    {p.category || "-"}
-                  </td>
-                  <td style={{ ...tdStyle, color: "var(--text-muted)" }}>
-                    {p.vendorName}
-                  </td>
-                  <td style={tdStyle}>Rs. {p.price.toFixed(2)}</td>
-                  <td style={tdStyle}>{p.stockQty}</td>
+                <tr
+                  key={p.id}
+                  style={{ transition: "background 0.12s" }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.background = "var(--surface-hover)")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.background = "transparent")
+                  }
+                >
+                  {/* Part name + vendor */}
                   <td style={tdStyle}>
-                    <Badge
-                      text={p.isLowStock ? "Low Stock" : "In Stock"}
-                      color={p.isLowStock ? "red" : "green"}
-                    />
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "11px",
+                      }}
+                    >
+                      {/* Small icon box */}
+                      <div
+                        style={{
+                          width: 34,
+                          height: 34,
+                          borderRadius: "6px",
+                          background: "var(--surface-2)",
+                          border: "1px solid var(--border)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          color: "var(--text-muted)",
+                          flexShrink: 0,
+                        }}
+                      >
+                        <Package size={16} />
+                      </div>
+                      <div>
+                        <div
+                          style={{
+                            fontSize: "14px",
+                            fontWeight: 600,
+                            color: "var(--text)",
+                          }}
+                        >
+                          {p.name}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: "12px",
+                            color: "var(--text-muted)",
+                            marginTop: "1px",
+                          }}
+                        >
+                          {p.vendorName || "-"}
+                        </div>
+                      </div>
+                    </div>
                   </td>
+
+                  {/* Category chip */}
                   <td style={tdStyle}>
-                    <div style={{ display: "flex", gap: "8px" }}>
-                      <Btn
-                        variant="ghost"
-                        style={{ padding: "5px 12px", fontSize: "12px" }}
+                    {p.category ? (
+                      <span
+                        style={{
+                          display: "inline-block",
+                          padding: "3px 10px",
+                          borderRadius: "3px",
+                          fontSize: "12px",
+                          fontWeight: 500,
+                          background: "var(--surface-2)",
+                          color: "var(--text-muted)",
+                          border: "1px solid var(--border)",
+                        }}
+                      >
+                        {p.category}
+                      </span>
+                    ) : (
+                      <span
+                        style={{ color: "var(--text-faint)", fontSize: "13px" }}
+                      >
+                        -
+                      </span>
+                    )}
+                  </td>
+
+                  {/* Price */}
+                  <td style={tdStyle}>
+                    <span
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: 600,
+                        color: "var(--text)",
+                      }}
+                    >
+                      Rs. {p.price.toFixed(2)}
+                    </span>
+                  </td>
+
+                  {/* Stock with low-stock warning */}
+                  <td style={tdStyle}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "7px",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontSize: "14px",
+                          fontWeight: 600,
+                          color:
+                            p.stockQty === 0
+                              ? "var(--error)"
+                              : p.isLowStock
+                                ? "var(--warn, #E8A84E)"
+                                : "var(--success, #5CC44A)",
+                        }}
+                      >
+                        {p.stockQty}
+                      </span>
+                      {p.isLowStock && (
+                        <span
+                          style={{
+                            fontSize: "11px",
+                            fontWeight: 600,
+                            color:
+                              p.stockQty === 0
+                                ? "var(--error)"
+                                : "var(--warn, #E8A84E)",
+                            background:
+                              p.stockQty === 0
+                                ? "var(--error-bg)"
+                                : "rgba(232,168,78,0.1)",
+                            border: `1px solid ${p.stockQty === 0 ? "var(--error-border)" : "rgba(232,168,78,0.3)"}`,
+                            padding: "1px 7px",
+                            borderRadius: "3px",
+                          }}
+                        >
+                          {p.stockQty === 0 ? "Out" : "Low"}
+                        </span>
+                      )}
+                    </div>
+                  </td>
+
+                  {/* Edit / Delete icon buttons */}
+                  <td style={tdStyle}>
+                    <div style={{ display: "flex", gap: "6px" }}>
+                      {/* Edit */}
+                      <button
                         onClick={() => setEditing(p)}
+                        title="Edit part"
+                        style={{
+                          width: 32,
+                          height: 32,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          border: "1px solid var(--border)",
+                          borderRadius: "5px",
+                          background: "transparent",
+                          color: "var(--text-muted)",
+                          cursor: "pointer",
+                          transition: "background 0.13s, color 0.13s",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = "var(--surface-2)";
+                          e.currentTarget.style.color = "var(--text)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = "transparent";
+                          e.currentTarget.style.color = "var(--text-muted)";
+                        }}
                       >
-                        Edit
-                      </Btn>
-                      <Btn
-                        variant="danger"
-                        style={{ padding: "5px 12px", fontSize: "12px" }}
+                        <EditIcon />
+                      </button>
+
+                      {/* Delete */}
+                      <button
                         onClick={() => handleDelete(p.id)}
+                        title="Delete part"
+                        style={{
+                          width: 32,
+                          height: 32,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          border: "1px solid var(--error-border, #cc2200)",
+                          borderRadius: "5px",
+                          background: "transparent",
+                          color: "var(--error)",
+                          cursor: "pointer",
+                          transition: "background 0.13s",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = "var(--error-bg)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = "transparent";
+                        }}
                       >
-                        Delete
-                      </Btn>
+                        <DeleteIcon />
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -364,6 +571,7 @@ export default function PartsManagement() {
         )}
       </div>
 
+      {/* Modals */}
       {showAdd && (
         <Modal title="Add New Part" onClose={() => setShowAdd(false)}>
           <PartForm

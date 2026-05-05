@@ -8,6 +8,8 @@ import PartsManagement from "./PartsManagement";
 import AppointmentsAdmin from "./AppointmentsAdmin";
 import PartRequestsAdmin from "./PartRequestsAdmin";
 import Vendors from "./Vendors";
+import PurchaseInvoices from "./PurchaseInvoices";
+
 // Admin overview cards
 function Overview() {
   return (
@@ -121,7 +123,7 @@ export default function AdminDashboard({ theme, toggleTheme }) {
         path="/purchase-invoices"
         element={
           <Page title="Purchase Invoices">
-            <Placeholder name="Purchase Invoices" />
+            <PurchaseInvoices />
           </Page>
         }
       />
