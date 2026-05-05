@@ -79,13 +79,13 @@ export default function Register({ theme, toggleTheme }) {
         password: form.password,
       });
       if (res.success) {
-        setSuccess("Account created. Taking you to login...");
-        setTimeout(() => navigate("/login"), 1800);
+        // Pass email to OTP page
+        navigate("/verify-otp", { state: { email: form.email } });
       } else {
         setError(res.message || "Registration failed");
       }
     } catch {
-      setError("Cannot connect to server. Make sure the backend is running.");
+      setError("Cannot connect to server.");
     } finally {
       setLoading(false);
     }
