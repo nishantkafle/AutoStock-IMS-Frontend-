@@ -7,6 +7,7 @@ import Profile from "../profile/Profile";
 import RegisterCustomer from "./RegisterCustomer";
 import CustomerList from "./CustomerList";
 import CustomerDetails from "./CustomerDetails";
+import CustomerReports from "./CustomerReports";
 
 function Overview() {
   const { user } = useAuth();
