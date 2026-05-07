@@ -37,3 +37,29 @@ export async function searchCustomers(keyword) {
     });
     return response.data;
 }
+//  Get regular customers report
+export async function getRegularCustomers() {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(`${API}/customers/reports/regulars`, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+}
+
+//  Get high spenders report
+export async function getHighSpenders() {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(`${API}/customers/reports/high-spenders`, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+}
+
+//  Get pending credits report
+export async function getPendingCredits() {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(`${API}/customers/reports/pending-credits`, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+}
