@@ -157,13 +157,13 @@ export default function StaffDashboard({ theme, toggleTheme }) {
     }
 />
       <Route
-        path="/reports"
-        element={
-          <Page title="Customer Reports">
-            <Placeholder name="Customer Reports" />
-          </Page>
-        }
-      />
+    path="/reports"
+    element={
+        <Page title="Customer Reports">
+            <CustomerReports />
+        </Page>
+    }
+/>
       <Route
         path="/profile"
         element={
@@ -173,6 +173,7 @@ export default function StaffDashboard({ theme, toggleTheme }) {
         }
       />
     </Routes>
+    
     
   );
 }
