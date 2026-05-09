@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from "./context/AuthContext";
 import Home from "./pages/Home";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
+import VerifyOtp from "./pages/auth/VerifyOtp";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import StaffDashboard from "./pages/staff/StaffDashboard";
 import CustomerDashboard from "./pages/customer/CustomerDashboard";
@@ -48,6 +49,7 @@ function AppContent() {
           path="/register"
           element={<Register theme={theme} toggleTheme={toggleTheme} />}
         />
+        <Route path="/verify-otp" element={<VerifyOtp />} />
 
         {/* Admin only */}
         <Route

@@ -19,103 +19,49 @@ import {
 } from "lucide-react";
 import Logo from "./Logo";
 
-// Menu structure per role with section groupings
+// Menu items per role
 const menus = {
   Admin: [
+    { label: "Overview", path: "/admin", icon: LayoutDashboard },
+    { label: "Inventory", path: "/admin/inventory", icon: Package },
+    { label: "Vendors", path: "/admin/vendors", icon: Building2 },
     {
-      section: "WORKSPACE",
-      items: [
-        { label: "Overview", path: "/admin", icon: LayoutDashboard },
-        { label: "Inventory", path: "/admin/inventory", icon: Package },
-        { label: "Vendors", path: "/admin/vendors", icon: Building2 },
-        {
-          label: "Purchase Invoices",
-          path: "/admin/purchase-invoices",
-          icon: Receipt,
-        },
-      ],
+      label: "Purchase Invoices",
+      path: "/admin/purchase-invoices",
+      icon: Receipt,
     },
-    {
-      section: "COMMERCE",
-      items: [
-        { label: "Sales & Invoices", path: "/admin/sales", icon: ShoppingCart },
-        { label: "Customers", path: "/admin/customers", icon: Users },
-        { label: "Vehicles", path: "/admin/vehicles", icon: Car },
-        { label: "Appointments", path: "/admin/appointments", icon: Calendar },
-        { label: "Part Requests", path: "/admin/part-requests", icon: Inbox },
-        { label: "Reviews", path: "/admin/reviews", icon: Star },
-      ],
-    },
-    {
-      section: "MANAGEMENT",
-      items: [
-        { label: "Staff & Roles", path: "/admin/staff", icon: UserCog },
-        { label: "Financial Reports", path: "/admin/reports", icon: BarChart2 },
-      ],
-    },
+    { label: "Sales & Invoices", path: "/admin/sales", icon: ShoppingCart },
+    { label: "Customers", path: "/admin/customers", icon: Users },
+    { label: "Vehicles", path: "/admin/vehicles", icon: Car },
+    { label: "Appointments", path: "/admin/appointments", icon: Calendar },
+    { label: "Part Requests", path: "/admin/part-requests", icon: Inbox },
+    { label: "Reviews", path: "/admin/reviews", icon: Star },
+    { label: "Staff & Roles", path: "/admin/staff", icon: UserCog },
+    { label: "Financial Reports", path: "/admin/reports", icon: BarChart2 },
   ],
 
   Staff: [
+    { label: "Overview", path: "/staff", icon: LayoutDashboard },
+    { label: "Customer List", path: "/staff/customers", icon: Users },
     {
-      section: "WORKSPACE",
-      items: [{ label: "Overview", path: "/staff", icon: LayoutDashboard }],
+      label: "Register Customer",
+      path: "/staff/register-customer",
+      icon: User,
     },
-    {
-      section: "CUSTOMERS",
-      items: [
-        { label: "Customer List", path: "/staff/customers", icon: Users },
-        {
-          label: "Register Customer",
-          path: "/staff/register-customer",
-          icon: User,
-        },
-        { label: "Vehicle Records", path: "/staff/vehicles", icon: Car },
-      ],
-    },
-    {
-      section: "SALES",
-      items: [
-        { label: "Sales & Invoices", path: "/staff/sales", icon: ShoppingCart },
-        { label: "Appointments", path: "/staff/appointments", icon: Calendar },
-        { label: "Part Requests", path: "/staff/part-requests", icon: Inbox },
-      ],
-    },
-    {
-      section: "REPORTS",
-      items: [
-        { label: "Customer Reports", path: "/staff/reports", icon: BarChart2 },
-      ],
-    },
+    { label: "Vehicle Records", path: "/staff/vehicles", icon: Car },
+    { label: "Sales & Invoices", path: "/staff/sales", icon: ShoppingCart },
+    { label: "Appointments", path: "/staff/appointments", icon: Calendar },
+    { label: "Part Requests", path: "/staff/part-requests", icon: Inbox },
+    { label: "Customer Reports", path: "/staff/reports", icon: BarChart2 },
   ],
 
   Customer: [
-    {
-      section: "MY ACCOUNT",
-      items: [{ label: "Dashboard", path: "/customer", icon: LayoutDashboard }],
-    },
-    {
-      section: "SERVICES",
-      items: [
-        {
-          label: "Appointments",
-          path: "/customer/appointments",
-          icon: Calendar,
-        },
-        {
-          label: "Part Requests",
-          path: "/customer/part-requests",
-          icon: Inbox,
-        },
-        { label: "Reviews", path: "/customer/reviews", icon: Star },
-      ],
-    },
-    {
-      section: "HISTORY",
-      items: [
-        { label: "My Orders", path: "/customer/orders", icon: FileText },
-        { label: "My Vehicles", path: "/customer/vehicles", icon: Car },
-      ],
-    },
+    { label: "Dashboard", path: "/customer", icon: LayoutDashboard },
+    { label: "Appointments", path: "/customer/appointments", icon: Calendar },
+    { label: "Part Requests", path: "/customer/part-requests", icon: Inbox },
+    { label: "Reviews", path: "/customer/reviews", icon: Star },
+    { label: "My Orders", path: "/customer/orders", icon: FileText },
+    { label: "My Vehicles", path: "/customer/vehicles", icon: Car },
   ],
 };
 
@@ -123,27 +69,13 @@ export default function Sidebar() {
   const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  const sections = menus[user?.role] || [];
-
+  const items = menus[user?.role] || [];
   const profilePath = `/${user?.role?.toLowerCase()}/profile`;
 
   function handleLogout() {
     logout();
     navigate("/login");
   }
-
-  const isActive = (path) => {
-    if (
-      path.endsWith(
-        user?.role?.toLowerCase() === "admin"
-          ? "/admin"
-          : path.split("/").slice(0, -1).join("/") + "",
-      )
-    ) {
-      return location.pathname === path;
-    }
-    return location.pathname === path;
-  };
 
   return (
     <div
@@ -184,74 +116,59 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {/* Nav sections */}
-      <nav style={{ flex: 1, overflowY: "auto", padding: "10px 0" }}>
-        {sections.map((sec) => (
-          <div key={sec.section} style={{ marginBottom: "4px" }}>
-            {/* Section label */}
-            <div
+      {/* Nav items */}
+      <nav style={{ flex: 1, overflowY: "auto", padding: "10px 10px" }}>
+        {items.map((item) => {
+          const active = location.pathname === item.path;
+          const Icon = item.icon;
+          return (
+            <Link
+              key={item.path}
+              to={item.path}
               style={{
-                fontSize: "10px",
-                fontWeight: 600,
-                letterSpacing: "1.2px",
-                textTransform: "uppercase",
-                color: "var(--sidebar-section)",
-                padding: "10px 18px 4px",
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                padding: "9px 10px",
+                marginBottom: "2px",
+                borderRadius: "5px",
+                fontSize: "14.2px",
+                fontWeight: active ? 600 : 400,
+                color: active
+                  ? "var(--sidebar-active-text)"
+                  : "var(--sidebar-text)",
+                background: active ? "var(--sidebar-active-bg)" : "transparent",
+                borderLeft: `2px solid ${active ? "var(--sidebar-active-bar)" : "transparent"}`,
+                transition: "background 0.12s",
+                textDecoration: "none",
+              }}
+              onMouseEnter={(e) => {
+                if (!active)
+                  e.currentTarget.style.background = "var(--sidebar-hover-bg)";
+              }}
+              onMouseLeave={(e) => {
+                if (!active) e.currentTarget.style.background = "transparent";
               }}
             >
-              {sec.section}
-            </div>
-
-            {sec.items.map((item) => {
-              const active = location.pathname === item.path;
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "9px",
-                    padding: "7px 18px",
-                    fontSize: "13.5px",
-                    color: active
-                      ? "var(--sidebar-active-text)"
-                      : "var(--sidebar-text)",
-                    background: active
-                      ? "var(--sidebar-active-bg)"
-                      : "transparent",
-                    borderLeft: `2px solid ${active ? "var(--sidebar-active-bar)" : "transparent"}`,
-                    transition: "background 0.12s",
-                    cursor: "pointer",
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!active)
-                      e.currentTarget.style.background =
-                        "var(--sidebar-hover-bg)";
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!active)
-                      e.currentTarget.style.background = "transparent";
-                  }}
-                >
-                  <Icon size={15} style={{ flexShrink: 0 }} />
-                  {item.label}
-                </Link>
-              );
-            })}
-          </div>
-        ))}
+              {/* Icon */}
+              <Icon
+                size={16}
+                style={{ flexShrink: 0, opacity: active ? 1 : 0.75 }}
+              />
+              {item.label}
+            </Link>
+          );
+        })}
       </nav>
 
-      {/* Bottom - user info + profile + signout */}
+      {/* Bottom: user info + profile + sign out */}
       <div
         style={{
           borderTop: "1px solid var(--sidebar-border)",
           padding: "12px 0 8px",
         }}
       >
-        {/* User info - compact */}
+        {/* User avatar + name + role */}
         <div
           style={{
             padding: "6px 18px 10px",
@@ -260,7 +177,6 @@ export default function Sidebar() {
             gap: "9px",
           }}
         >
-          {/* Avatar initial */}
           <div
             style={{
               width: 28,
@@ -282,7 +198,7 @@ export default function Sidebar() {
           <div style={{ overflow: "hidden" }}>
             <div
               style={{
-                fontSize: "12.5px",
+                fontSize: "14px",
                 fontWeight: 600,
                 color: "var(--sidebar-text)",
                 whiteSpace: "nowrap",
@@ -304,10 +220,12 @@ export default function Sidebar() {
           style={{
             display: "flex",
             alignItems: "center",
-            gap: "9px",
-            padding: "7px 18px",
+            gap: "10px",
+            padding: "9px 12px",
+            marginBottom: "2px",
             width: "100%",
-            fontSize: "13px",
+            fontSize: "14.2px",
+            fontWeight: location.pathname === profilePath ? 600 : 400,
             color:
               location.pathname === profilePath
                 ? "var(--sidebar-active-text)"
@@ -317,6 +235,7 @@ export default function Sidebar() {
                 ? "var(--sidebar-active-bg)"
                 : "transparent",
             borderLeft: `2px solid ${location.pathname === profilePath ? "var(--sidebar-active-bar)" : "transparent"}`,
+            borderRadius: "5px",
             transition: "background 0.12s",
           }}
           onMouseEnter={(e) =>
@@ -329,7 +248,7 @@ export default function Sidebar() {
                 : "transparent")
           }
         >
-          <User size={15} />
+          <User size={17} style={{ flexShrink: 0, opacity: 0.75 }} />
           Profile
         </button>
 
@@ -339,11 +258,13 @@ export default function Sidebar() {
           style={{
             display: "flex",
             alignItems: "center",
-            gap: "9px",
-            padding: "7px 18px",
+            gap: "10px",
+            padding: "9px 12px",
             width: "100%",
-            fontSize: "13px",
+            fontSize: "14.2px",
             color: "var(--error)",
+            background: "transparent",
+            borderRadius: "5px",
             transition: "background 0.12s",
           }}
           onMouseEnter={(e) =>
@@ -353,7 +274,7 @@ export default function Sidebar() {
             (e.currentTarget.style.background = "transparent")
           }
         >
-          <LogOut size={15} />
+          <LogOut size={17} style={{ flexShrink: 0 }} />
           Sign Out
         </button>
       </div>

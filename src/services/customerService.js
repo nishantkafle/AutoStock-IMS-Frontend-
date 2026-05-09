@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API = "https://localhost:7089/api";
 
-//  Register new customer with vehicle details
+// Feature 6: Register new customer with vehicle details
 export async function registerCustomer(data) {
     const token = localStorage.getItem("token");
     const response = await axios.post(`${API}/customers/register`, data, {
@@ -11,7 +11,7 @@ export async function registerCustomer(data) {
     return response.data;
 }
 
-//  Get all customers
+// Feature 8: Get all customers
 export async function getAllCustomers() {
     const token = localStorage.getItem("token");
     const response = await axios.get(`${API}/customers`, {
@@ -20,7 +20,7 @@ export async function getAllCustomers() {
     return response.data;
 }
 
-//  Get customer by ID
+// Feature 8: Get customer by ID
 export async function getCustomerById(id) {
     const token = localStorage.getItem("token");
     const response = await axios.get(`${API}/customers/${id}`, {
@@ -29,7 +29,7 @@ export async function getCustomerById(id) {
     return response.data;
 }
 
-//  Search customers by name, phone, ID or vehicle number
+// Feature 10: Search customers by name, phone, ID or vehicle number
 export async function searchCustomers(keyword) {
     const token = localStorage.getItem("token");
     const response = await axios.get(`${API}/customers/search?keyword=${keyword}`, {
@@ -37,7 +37,8 @@ export async function searchCustomers(keyword) {
     });
     return response.data;
 }
-//  Get regular customers report
+
+// Feature 9: Get regular customers report
 export async function getRegularCustomers() {
     const token = localStorage.getItem("token");
     const response = await axios.get(`${API}/customers/reports/regulars`, {
@@ -46,7 +47,7 @@ export async function getRegularCustomers() {
     return response.data;
 }
 
-//  Get high spenders report
+// Feature 9: Get high spenders report
 export async function getHighSpenders() {
     const token = localStorage.getItem("token");
     const response = await axios.get(`${API}/customers/reports/high-spenders`, {
@@ -55,7 +56,7 @@ export async function getHighSpenders() {
     return response.data;
 }
 
-//  Get pending credits report
+// Feature 9: Get pending credits report
 export async function getPendingCredits() {
     const token = localStorage.getItem("token");
     const response = await axios.get(`${API}/customers/reports/pending-credits`, {

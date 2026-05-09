@@ -19,6 +19,11 @@ export async function registerCustomer(data) {
   }
 }
 
+export async function verifyOtp(data) {
+  const res = await axios.post(`${API}/auth/verify-otp`, data);
+  return res.data;
+}
+
 export async function loginUser(data) {
   try {
     const res = await axios.post(`${API}/auth/login`, data);
