@@ -9,6 +9,7 @@ import AppointmentsAdmin from "./AppointmentsAdmin";
 import PartRequestsAdmin from "./PartRequestsAdmin";
 import Vendors from "./Vendors";
 import PurchaseInvoices from "./PurchaseInvoices";
+import FinancialReports from "./FinancialReports";
 
 // Admin overview cards
 function Overview() {
@@ -179,7 +180,7 @@ export default function AdminDashboard({ theme, toggleTheme }) {
         path="/reports"
         element={
           <Page title="Financial Reports">
-            <Placeholder name="Financial Reports" />
+            <FinancialReports />
           </Page>
         }
       />
