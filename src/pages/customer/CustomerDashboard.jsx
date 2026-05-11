@@ -8,6 +8,7 @@ import MyVehicles from "./MyVehicles";
 import CustomerAppointments from "./CustomerAppointments";
 import CustomerPartRequests from "./CustomerPartRequests";
 import CustomerReviews from "./CustomerReviews";
+import MyOrders from "./MyOrders";
 
 const ACTIONS = [
   {
@@ -202,7 +203,7 @@ export default function CustomerDashboard({ theme, toggleTheme }) {
         path="/orders"
         element={
           <Page title="My Orders">
-            <Placeholder name="Order History" />
+            <MyOrders />
           </Page>
         }
       />
