@@ -1,169 +1,228 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { registerCustomer } from "../../services/customerService";
+import { Field, Btn, Alert } from "../../components/FormElements";
+
+const API = "https://localhost:7089/api";
 
 export default function RegisterCustomer() {
-    const navigate = useNavigate();
-    const [error, setError] = useState("");
-    const [success, setSuccess] = useState("");
-    const [form, setForm] = useState({
-        fullName: "",
-        email: "",
-        password: "",
-        phoneNumber: "",
-        vehicleNumber: "",
-        make: "",
-        model: "",
-        year: "",
-    });
+  const navigate = useNavigate();
+  const [msg, setMsg] = useState({ text: "", ok: false });
+  const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState({
+    fullName: "",
+    email: "",
+    password: "",
+    phoneNumber: "",
+    vehicleNumber: "",
+    make: "",
+    model: "",
+    year: "",
+  });
 
-    function handleChange(e) {
-        setForm({ ...form, [e.target.name]: e.target.value });
+  function set(key) {
+    return (e) => setForm({ ...form, [key]: e.target.value });
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setMsg({ text: "", ok: false });
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API}/customers/register`, {
+        // correct endpoint
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ ...form, year: parseInt(form.year) }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setMsg({
+          text: "Customer registered! Login credentials have been emailed to them.",
+          ok: true,
+        });
+        setForm({
+          fullName: "",
+          email: "",
+          password: "",
+          phoneNumber: "",
+          vehicleNumber: "",
+          make: "",
+          model: "",
+          year: "",
+        });
+        setTimeout(() => navigate("/staff/customers"), 2200);
+      } else {
+        setMsg({
+          text: data.message || "Registration failed. Please try again.",
+          ok: false,
+        });
+      }
+    } catch {
+      setMsg({
+        text: "Cannot connect to server. Make sure the backend is running.",
+        ok: false,
+      });
+    } finally {
+      setLoading(false);
     }
+  }
 
-    async function handleSubmit(e) {
-        e.preventDefault();
-        setError("");
-        setSuccess("");
-        try {
-            await registerCustomer({
-                ...form,
-                year: parseInt(form.year),
-            });
-            setSuccess("Customer registered successfully!");
-            setTimeout(() => navigate("/staff/customers"), 1500);
-        } catch (err) {
-            setError(err.response?.data?.message || "Failed to register customer");
-        }
-    }
+  const sectionLabel = {
+    fontSize: "12px",
+    fontWeight: 700,
+    letterSpacing: "0.8px",
+    textTransform: "uppercase",
+    color: "var(--text-muted)",
+    marginBottom: "14px",
+    marginTop: "6px",
+    paddingBottom: "8px",
+    borderBottom: "1px solid var(--border)",
+  };
 
-    return (
-        <div style={{
-            minHeight: "100vh",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "var(--bg)"
-        }}>
-            <div style={{
-                background: "white",
-                padding: "40px",
-                borderRadius: "12px",
-                boxShadow: "0 2px 16px rgba(0,0,0,0.08)",
-                width: "100%",
-                maxWidth: "480px"
-            }}>
-                <h2 style={{ fontSize: "22px", fontWeight: "600", marginBottom: "6px" }}>
-                    Register Customer
-                </h2>
-                <p style={{ color: "#888", fontSize: "13.5px", marginBottom: "24px" }}>
-                    Fill in customer and vehicle details
-                </p>
+  return (
+    <div style={{ maxWidth: "560px" }}>
+      {/* Page heading */}
+      <div style={{ marginBottom: "24px" }}>
+        <h1
+          style={{ fontSize: "22px", fontWeight: 700, letterSpacing: "-0.4px" }}
+        >
+          Register Customer
+        </h1>
+        <p
+          style={{
+            fontSize: "14px",
+            color: "var(--text-muted)",
+            marginTop: "3px",
+          }}
+        >
+          Fill in customer and vehicle details. Login credentials will be
+          emailed automatically.
+        </p>
+      </div>
 
-                {error && (
-                    <div style={{
-                        background: "#fef2f2", border: "1px solid #fca5a5",
-                        color: "#dc2626", padding: "10px 14px",
-                        borderRadius: "6px", fontSize: "13px", marginBottom: "16px"
-                    }}>
-                        {error}
-                    </div>
-                )}
+      <Alert text={msg.text} ok={msg.ok} />
 
-                {success && (
-                    <div style={{
-                        background: "#f0fdf4", border: "1px solid #86efac",
-                        color: "#16a34a", padding: "10px 14px",
-                        borderRadius: "6px", fontSize: "13px", marginBottom: "16px"
-                    }}>
-                        {success}
-                    </div>
-                )}
+      {/* Form card */}
+      <div
+        style={{
+          background: "var(--surface)",
+          border: "1px solid var(--border)",
+          borderRadius: "6px",
+          padding: "28px",
+        }}
+      >
+        <form onSubmit={handleSubmit}>
+          {/* Customer Information */}
+          <div style={sectionLabel}>Customer Information</div>
 
-                <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
+          <Field
+            label="Full Name"
+            value={form.fullName}
+            onChange={set("fullName")}
+            placeholder="e.g. Ram Bahadur"
+            required
+          />
+          <Field
+            label="Email"
+            type="email"
+            value={form.email}
+            onChange={set("email")}
+            placeholder="customer@email.com"
+            required
+          />
+          <Field
+            label="Password"
+            type="password"
+            value={form.password}
+            onChange={set("password")}
+            placeholder="Min. 6 characters"
+            required
+            note="This will be emailed to the customer. They should change it after first login."
+          />
+          <Field
+            label="Phone Number"
+            type="tel"
+            value={form.phoneNumber}
+            onChange={set("phoneNumber")}
+            placeholder="+977 98XXXXXXXX"
+            required
+          />
 
-                    {/* Customer Info */}
-                    <p style={{ fontWeight: "600", fontSize: "13px", color: "#555", marginBottom: "-8px" }}>
-                        Customer Information
-                    </p>
+          {/* Vehicle Information */}
+          <div style={{ ...sectionLabel, marginTop: "20px" }}>
+            Vehicle Information
+          </div>
 
-                    {[
-                        { label: "Full Name", name: "fullName", type: "text" },
-                        { label: "Email", name: "email", type: "email" },
-                        { label: "Password", name: "password", type: "password" },
-                        { label: "Phone Number", name: "phoneNumber", type: "text" },
-                    ].map(({ label, name, type }) => (
-                        <div key={name}>
-                            <label style={{ display: "block", fontSize: "13px", fontWeight: "600", marginBottom: "6px" }}>
-                                {label}
-                            </label>
-                            <input
-                                type={type}
-                                name={name}
-                                value={form[name]}
-                                onChange={handleChange}
-                                required
-                                style={{
-                                    width: "100%", padding: "9px 12px",
-                                    fontSize: "13.5px", borderRadius: "6px",
-                                    border: "1px solid var(--input-border)",
-                                    boxSizing: "border-box"
-                                }}
-                            />
-                        </div>
-                    ))}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "12px",
+            }}
+          >
+            <Field
+              label="Make"
+              value={form.make}
+              onChange={set("make")}
+              placeholder="e.g. Toyota"
+              required
+            />
+            <Field
+              label="Model"
+              value={form.model}
+              onChange={set("model")}
+              placeholder="e.g. Corolla"
+              required
+            />
+          </div>
 
-                    {/* Vehicle Info */}
-                    <p style={{ fontWeight: "600", fontSize: "13px", color: "#555", marginBottom: "-8px" }}>
-                        Vehicle Information
-                    </p>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "12px",
+            }}
+          >
+            <Field
+              label="Year"
+              type="number"
+              value={form.year}
+              onChange={set("year")}
+              placeholder="e.g. 2020"
+              min="1990"
+              max={new Date().getFullYear()}
+              required
+            />
+            <Field
+              label="Vehicle Number"
+              value={form.vehicleNumber}
+              onChange={set("vehicleNumber")}
+              placeholder="e.g. BA 1 PA 1234"
+              required
+            />
+          </div>
 
-                    {[
-                        { label: "Vehicle Number", name: "vehicleNumber", type: "text" },
-                        { label: "Make (e.g. Toyota)", name: "make", type: "text" },
-                        { label: "Model (e.g. Corolla)", name: "model", type: "text" },
-                        { label: "Year", name: "year", type: "number" },
-                    ].map(({ label, name, type }) => (
-                        <div key={name}>
-                            <label style={{ display: "block", fontSize: "13px", fontWeight: "600", marginBottom: "6px" }}>
-                                {label}
-                            </label>
-                            <input
-                                type={type}
-                                name={name}
-                                value={form[name]}
-                                onChange={handleChange}
-                                required
-                                style={{
-                                    width: "100%", padding: "9px 12px",
-                                    fontSize: "13.5px", borderRadius: "6px",
-                                    border: "1px solid var(--input-border)",
-                                    boxSizing: "border-box"
-                                }}
-                            />
-                        </div>
-                    ))}
-
-                    <button
-                        type="submit"
-                        style={{
-                            width: "100%", padding: "10px",
-                            background: "#111", color: "white",
-                            border: "none", borderRadius: "6px",
-                            fontSize: "14px", fontWeight: "500",
-                            cursor: "pointer", marginTop: "4px"
-                        }}
-                    >
-                        Register Customer
-                    </button>
-
-                </form>
-            </div>
-
-            <p style={{ marginTop: "20px", fontSize: "13px", color: "#aaa" }}>
-                2026 AutoStock · Professional vehicle parts management
-            </p>
-        </div>
-    );
+          <div
+            style={{
+              display: "flex",
+              gap: "10px",
+              justifyContent: "flex-end",
+              marginTop: "8px",
+            }}
+          >
+            <Btn variant="ghost" onClick={() => navigate("/staff/customers")}>
+              Cancel
+            </Btn>
+            <Btn type="submit" disabled={loading}>
+              {loading ? "Registering..." : "Register Customer"}
+            </Btn>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 }
