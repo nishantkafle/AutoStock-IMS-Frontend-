@@ -10,8 +10,10 @@ import PartRequestsAdmin from "./PartRequestsAdmin";
 import Vendors from "./Vendors";
 import PurchaseInvoices from "./PurchaseInvoices";
 import FinancialReports from "./FinancialReports";
+import AdminCustomerList from "./AdminCustomerList";
+import SalesInvoices from "../staff/SalesInvoices";
+import InvoiceDetails from "../staff/InvoiceDetails";
 
-// Admin overview cards
 function Overview() {
   return (
     <div>
@@ -128,22 +130,17 @@ export default function AdminDashboard({ theme, toggleTheme }) {
           </Page>
         }
       />
-      <Route
-        path="/sales"
-        element={
-          <Page title="Sales & Invoices">
-            <Placeholder name="Sales and Invoices" />
-          </Page>
-        }
-      />
+
+      {/* Customers - admin view */}
       <Route
         path="/customers"
         element={
           <Page title="Customers">
-            <Placeholder name="Customer List" />
+            <AdminCustomerList />
           </Page>
         }
       />
+
       <Route
         path="/vehicles"
         element={
