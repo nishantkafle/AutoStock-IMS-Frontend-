@@ -9,9 +9,15 @@ import AppointmentsAdmin from "./AppointmentsAdmin";
 import PartRequestsAdmin from "./PartRequestsAdmin";
 import Vendors from "./Vendors";
 import PurchaseInvoices from "./PurchaseInvoices";
+<<<<<<< HEAD
 import CreditInvoices from "../staff/CreditInvoices";
+=======
+import FinancialReports from "./FinancialReports";
+import AdminCustomerList from "./AdminCustomerList";
+import SalesInvoices from "../staff/SalesInvoices";
+import InvoiceDetails from "../staff/InvoiceDetails";
+>>>>>>> 80f201434b66efb71341d37fb7dfa13b564caf0c
 
-// Admin overview cards
 function Overview() {
   return (
     <div>
@@ -128,14 +134,8 @@ export default function AdminDashboard({ theme, toggleTheme }) {
           </Page>
         }
       />
-      <Route
-        path="/sales"
-        element={
-          <Page title="Sales & Invoices">
-            <Placeholder name="Sales and Invoices" />
-          </Page>
-        }
-      />
+
+      {/* Customers - admin view */}
       <Route
         path="/credit-invoices"
         element={
@@ -148,10 +148,11 @@ export default function AdminDashboard({ theme, toggleTheme }) {
         path="/customers"
         element={
           <Page title="Customers">
-            <Placeholder name="Customer List" />
+            <AdminCustomerList />
           </Page>
         }
       />
+
       <Route
         path="/vehicles"
         element={
@@ -188,7 +189,7 @@ export default function AdminDashboard({ theme, toggleTheme }) {
         path="/reports"
         element={
           <Page title="Financial Reports">
-            <Placeholder name="Financial Reports" />
+            <FinancialReports />
           </Page>
         }
       />
