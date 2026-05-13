@@ -157,7 +157,7 @@ export default function CreditInvoices({ basePath }) {
       {showSettleModal && (
         <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
           <div style={{ background: "var(--card-bg)", padding: "24px", borderRadius: "10px", width: "400px", maxWidth: "90%" }}>
-            <h2 style={{ fontSize: "18px", fontWeight: "700", marginBottom: "8px" }}>Make Settlement</h2>
+            <h2 style={{ fontSize: "18px", fontWeight: "700", marginBottom: "8px" }}>Settlement details</h2>
             <p style={{ fontSize: "14px", color: "var(--text-muted)", marginBottom: "20px" }}>
               Recording payment for {selectedInvoice?.customerName}'s balance of <b>NPR {selectedInvoice?.remainingBalance.toFixed(2)}</b>
             </p>
@@ -202,7 +202,7 @@ export default function CreditInvoices({ basePath }) {
         <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
           <div style={{ background: "var(--card-bg)", padding: "24px", borderRadius: "10px", width: "600px", maxWidth: "95%", maxHeight: "80vh", overflowY: "auto" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-              <h2 style={{ fontSize: "20px", fontWeight: "700" }}>Credit Statement</h2>
+              <h2 style={{ fontSize: "20px", fontWeight: "700" }}>Credit details Statement list</h2>
               <button onClick={() => setShowStatementModal(false)} style={{ border: "none", background: "none", fontSize: "20px", cursor: "pointer" }}>✕</button>
             </div>
 
