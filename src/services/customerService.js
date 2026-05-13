@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "https://localhost:7089/api";
+const API = "http://localhost:5121/api";
 
 //  Register new customer with vehicle details
 export async function registerCustomer(data) {

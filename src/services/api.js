@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "https://localhost:7089/api";
+const API = "http://localhost:5121/api";
 
 // Helper - gets token from localStorage and builds auth header
 function authHeader() {
@@ -210,5 +210,15 @@ export const invoicesService = {
   getById: (id) =>
     axios
       .get(`${API}/invoices/${id}`, { headers: authHeader() })
+      .then((r) => r.data),
+
+  sendEmail: (id, email) =>
+    axios
+      .post(`${API}/invoices/${id}/send-email`, { email }, { headers: authHeader() })
+      .then((r) => r.data),
+
+  settle: (id, data) =>
+    axios
+      .post(`${API}/invoices/${id}/settle`, data, { headers: authHeader() })
       .then((r) => r.data),
 };

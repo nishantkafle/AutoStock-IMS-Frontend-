@@ -10,6 +10,7 @@ import CustomerDetails from "./CustomerDetails";
 import AppointmentsAdmin from "../admin/AppointmentsAdmin";
 import PartRequestsAdmin from "../admin/PartRequestsAdmin";
 import SalesInvoices from "./SalesInvoices";
+import CreditInvoices from "./CreditInvoices";
 import CreateInvoice from "./CreateInvoice";
 import InvoiceDetails from "./InvoiceDetails";
 
@@ -142,6 +143,14 @@ export default function StaffDashboard({ theme, toggleTheme }) {
         element={
           <Page title="Sales & Invoices">
             <SalesInvoices />
+          </Page>
+        }
+      />
+      <Route
+        path="/credit-invoices"
+        element={
+          <Page title="Credit Invoices">
+            <CreditInvoices basePath="/staff" />
           </Page>
         }
       />

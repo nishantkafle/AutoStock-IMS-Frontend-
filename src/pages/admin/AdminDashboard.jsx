@@ -9,6 +9,7 @@ import AppointmentsAdmin from "./AppointmentsAdmin";
 import PartRequestsAdmin from "./PartRequestsAdmin";
 import Vendors from "./Vendors";
 import PurchaseInvoices from "./PurchaseInvoices";
+import CreditInvoices from "../staff/CreditInvoices";
 
 // Admin overview cards
 function Overview() {
@@ -132,6 +133,14 @@ export default function AdminDashboard({ theme, toggleTheme }) {
         element={
           <Page title="Sales & Invoices">
             <Placeholder name="Sales and Invoices" />
+          </Page>
+        }
+      />
+      <Route
+        path="/credit-invoices"
+        element={
+          <Page title="Credit Invoices">
+            <CreditInvoices basePath="/admin" />
           </Page>
         }
       />

@@ -7,6 +7,12 @@ export default function InvoiceDetails() {
   const [invoice, setInvoice] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  
+  // Email Modal State
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [emailAddress, setEmailAddress] = useState("");
+  const [sendingEmail, setSendingEmail] = useState(false);
+  const [emailMessage, setEmailMessage] = useState("");
 
   useEffect(() => {
     fetchInvoice();
@@ -21,6 +27,26 @@ export default function InvoiceDetails() {
       setError("Failed to load invoice details");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleSendEmail(e) {
+    e.preventDefault();
+    if (!emailAddress) return;
+    try {
+      setSendingEmail(true);
+      setEmailMessage("");
+      await invoicesService.sendEmail(id, emailAddress);
+      setEmailMessage("Email sent successfully!");
+      setTimeout(() => {
+        setShowEmailModal(false);
+        setEmailMessage("");
+        setEmailAddress("");
+      }, 2000);
+    } catch (err) {
+      setEmailMessage("Failed to send email. Please try again.");
+    } finally {
+      setSendingEmail(false);
     }
   }
 
@@ -68,9 +94,31 @@ export default function InvoiceDetails() {
             Created on {new Date(invoice.createdAt).toLocaleString()}
           </p>
         </div>
-        <button onClick={() => window.print()} style={{ padding: "9px 18px", borderRadius: "6px", background: "#111", color: "white", border: "none", fontSize: "13.5px", fontWeight: "500", cursor: "pointer" }}>
-          Print Invoice
-        </button>
+        <div style={{ display: "flex", gap: "10px" }}>
+          <button 
+            onClick={() => setShowEmailModal(true)} 
+            style={{ 
+              padding: "9px 18px", 
+              borderRadius: "6px", 
+              background: "#2563eb", 
+              color: "white", 
+              border: "none", 
+              fontSize: "13.5px", 
+              fontWeight: "600", 
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              boxShadow: "0 2px 6px rgba(37, 99, 235, 0.3)"
+            }}
+          >
+            <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+            Send Email
+          </button>
+          <button onClick={() => window.print()} style={{ padding: "9px 18px", borderRadius: "6px", background: "#111", color: "white", border: "none", fontSize: "13.5px", fontWeight: "500", cursor: "pointer" }}>
+            Print Invoice
+          </button>
+        </div>
       </div>
 
       <div id="printable-invoice">
@@ -143,6 +191,43 @@ export default function InvoiceDetails() {
 
       </div>
     </div>
+    {showEmailModal && (
+      <div className="no-print" style={{
+        position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+        backgroundColor: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000
+      }}>
+        <div style={{ background: "var(--card-bg)", padding: "28px", borderRadius: "12px", width: "420px", maxWidth: "95%", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}>
+          <h3 style={{ marginTop: 0, marginBottom: "8px", fontSize: "20px", fontWeight: "700" }}>Send Invoice Email</h3>
+          <p style={{ color: "var(--text-muted)", fontSize: "14px", marginBottom: "24px" }}>Enter the customer's email address to send the PDF invoice.</p>
+          <form onSubmit={handleSendEmail}>
+            <div style={{ marginBottom: "20px" }}>
+              <label style={{ display: "block", marginBottom: "8px", fontSize: "13px", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.5px", color: "var(--text-muted)" }}>Email Address</label>
+              <input 
+                type="email" 
+                value={emailAddress} 
+                onChange={(e) => setEmailAddress(e.target.value)} 
+                required 
+                autoFocus
+                style={{ width: "100%", padding: "12px 14px", borderRadius: "8px", border: "2px solid #2563eb", background: "var(--bg)", color: "var(--text)", fontSize: "15px", outline: "none" }} 
+                placeholder="e.g. customer@example.com"
+              />
+            </div>
+            {emailMessage && <div style={{ marginBottom: "16px", padding: "10px", borderRadius: "6px", fontSize: "14px", backgroundColor: emailMessage.includes("success") ? "#dcfce7" : "#fee2e2", color: emailMessage.includes("success") ? "#15803d" : "#b91c1c", border: `1px solid ${emailMessage.includes("success") ? "#86efac" : "#fca5a5"}` }}>{emailMessage}</div>}
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", marginTop: "24px" }}>
+              <button type="button" onClick={() => setShowEmailModal(false)} style={{ padding: "10px 20px", borderRadius: "8px", border: "1px solid var(--card-border)", background: "transparent", cursor: "pointer", color: "var(--text)", fontWeight: "500" }}>Cancel</button>
+              <button type="submit" disabled={sendingEmail} style={{ padding: "10px 24px", borderRadius: "8px", border: "none", background: "#2563eb", color: "white", cursor: sendingEmail ? "not-allowed" : "pointer", opacity: sendingEmail ? 0.7 : 1, fontWeight: "600", display: "flex", alignItems: "center", gap: "8px", boxShadow: "0 4px 6px -1px rgba(37, 99, 235, 0.4)" }}>
+                {sendingEmail ? "Sending..." : (
+                  <>
+                    <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    Send Now
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    )}
   </div>
   );
 }
