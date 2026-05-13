@@ -65,130 +65,19 @@ export default function StaffDashboard({ theme, toggleTheme }) {
 
   return (
     <Routes>
-<<<<<<< HEAD
-      <Route
-        path="/"
-        element={
-          <Page title="Dashboard">
-            <Overview />
-          </Page>
-        }
-      />
-
-      <Route
-        path="/customers"
-        element={
-          <Page title="Customer List">
-            <CustomerList />
-          </Page>
-        }
-      />
-      <Route
-        path="/register-customer"
-        element={
-          <Page title="Register Customer">
-            <RegisterCustomer />
-          </Page>
-        }
-      />
-      <Route
-        path="/customers/:id"
-        element={
-          <Page title="Customer Details">
-            <CustomerDetails />
-          </Page>
-        }
-      />
-
-      <Route
-        path="/vehicles"
-        element={
-          <Page title="Vehicle Records">
-            <Placeholder name="Vehicle Records" />
-          </Page>
-        }
-      />
-      <Route
-        path="/sales"
-        element={
-          <Page title="Sales & Invoices">
-            <SalesInvoices />
-          </Page>
-        }
-      />
-      <Route
-        path="/credit-invoices"
-        element={
-          <Page title="Credit Invoices">
-            <CreditInvoices basePath="/staff" />
-          </Page>
-        }
-      />
-      <Route
-        path="/sales/new"
-        element={
-          <Page title="Create Invoice">
-            <CreateInvoice />
-          </Page>
-        }
-      />
-      <Route
-        path="/sales/:id"
-        element={
-          <Page title="Invoice Details">
-            <InvoiceDetails />
-          </Page>
-        }
-      />
-
-      {/* wired to real components */}
-      <Route
-        path="/appointments"
-        element={
-          <Page title="Appointments">
-            <AppointmentsAdmin />
-          </Page>
-        }
-      />
-      <Route
-        path="/part-requests"
-        element={
-          <Page title="Part Requests">
-            <PartRequestsAdmin />
-          </Page>
-        }
-      />
-
-      <Route
-        path="/reports"
-        element={
-          <Page title="Customer Reports">
-            <Placeholder name="Customer Reports" />
-          </Page>
-        }
-      />
-      <Route
-        path="/profile"
-        element={
-          <Page title="Profile">
-            <Profile />
-          </Page>
-        }
-      />
-=======
       <Route path="/" element={<Page title="Dashboard"><Overview /></Page>} />
       <Route path="/customers" element={<Page title="Customer List"><CustomerList /></Page>} />
       <Route path="/register-customer" element={<Page title="Register Customer"><RegisterCustomer /></Page>} />
       <Route path="/customers/:id" element={<Page title="Customer Details"><CustomerDetails /></Page>} />
       <Route path="/vehicles" element={<Page title="Vehicle Records"><Placeholder name="Vehicle Records" /></Page>} />
       <Route path="/sales" element={<Page title="Sales & Invoices"><SalesInvoices /></Page>} />
+      <Route path="/credit-invoices" element={<Page title="Credit Invoices"><CreditInvoices basePath="/staff" /></Page>} />
       <Route path="/sales/new" element={<Page title="Create Invoice"><CreateInvoice /></Page>} />
       <Route path="/sales/:id" element={<Page title="Invoice Details"><InvoiceDetails /></Page>} />
       <Route path="/appointments" element={<Page title="Appointments"><AppointmentsAdmin /></Page>} />
       <Route path="/part-requests" element={<Page title="Part Requests"><PartRequestsAdmin /></Page>} />
       <Route path="/reports" element={<Page title="Customer Reports"><CustomerReports /></Page>} />
       <Route path="/profile" element={<Page title="Profile"><Profile /></Page>} />
->>>>>>> 80f201434b66efb71341d37fb7dfa13b564caf0c
     </Routes>
   );
 }
