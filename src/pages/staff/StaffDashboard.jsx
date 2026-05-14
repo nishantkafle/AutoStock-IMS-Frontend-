@@ -14,6 +14,7 @@ import SalesInvoices from "./SalesInvoices";
 import CreditInvoices from "./CreditInvoices";
 import CreateInvoice from "./CreateInvoice";
 import InvoiceDetails from "./InvoiceDetails";
+import EditInvoice from "./EditInvoice";
 
 function Overview() {
   const { user } = useAuth();
@@ -74,6 +75,7 @@ export default function StaffDashboard({ theme, toggleTheme }) {
       <Route path="/credit-invoices" element={<Page title="Credit Invoices"><CreditInvoices basePath="/staff" /></Page>} />
       <Route path="/sales/new" element={<Page title="Create Invoice"><CreateInvoice /></Page>} />
       <Route path="/sales/:id" element={<Page title="Invoice Details"><InvoiceDetails /></Page>} />
+      <Route path="/sales/edit/:id" element={<Page title="Edit Invoice"><EditInvoice /></Page>} />
       <Route path="/appointments" element={<Page title="Appointments"><AppointmentsAdmin /></Page>} />
       <Route path="/part-requests" element={<Page title="Part Requests"><PartRequestsAdmin /></Page>} />
       <Route path="/reports" element={<Page title="Customer Reports"><CustomerReports /></Page>} />

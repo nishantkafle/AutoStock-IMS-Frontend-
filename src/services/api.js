@@ -221,4 +221,19 @@ export const invoicesService = {
     axios
       .post(`${API}/invoices/${id}/settle`, data, { headers: authHeader() })
       .then((r) => r.data),
+
+  delete: (id) =>
+    axios
+      .delete(`${API}/invoices/${id}`, { headers: authHeader() })
+      .then((r) => r.data),
+
+  update: (id, data) =>
+    axios
+      .put(`${API}/invoices/${id}`, data, { headers: authHeader() })
+      .then((r) => r.data),
+
+  sendCreditReminder: (id) =>
+    axios
+      .post(`${API}/invoices/${id}/send-credit-reminder`, {}, { headers: authHeader() })
+      .then((r) => r.data),
 };

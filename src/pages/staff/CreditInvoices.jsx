@@ -16,6 +16,7 @@ export default function CreditInvoices({ basePath }) {
 
   // Statement Modal State
   const [showStatementModal, setShowStatementModal] = useState(false);
+  const [sendingReminder, setSendingReminder] = useState(false);
 
   useEffect(() => {
     fetchCreditInvoices();
@@ -66,6 +67,29 @@ export default function CreditInvoices({ basePath }) {
     }
   }
 
+  async function handleSendReminder(id) {
+    try {
+      setSendingReminder(true);
+      await invoicesService.sendCreditReminder(id);
+      alert("Credit reminder email sent successfully!");
+    } catch (err) {
+      alert("Failed to send reminder: " + (err.response?.data?.message || err.message));
+    } finally {
+      setSendingReminder(false);
+    }
+  }
+
+  async function handleDelete(id) {
+    if (!window.confirm("Are you sure you want to delete this credit record? This action cannot be undone.")) return;
+    try {
+      await invoicesService.delete(id);
+      setInvoices(invoices.filter(inv => inv.id !== id));
+    } catch (err) {
+      console.error("Failed to delete invoice", err);
+      alert("Failed to delete invoice.");
+    }
+  }
+
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
@@ -105,6 +129,7 @@ export default function CreditInvoices({ basePath }) {
                   <td style={{ padding: "14px 20px" }}>
                     <div style={{ fontWeight: "600", color: "var(--primary)" }}>{inv.customerName}</div>
                     <div style={{ fontSize: "12px", color: "var(--text-muted)" }}>{inv.customerPhone}</div>
+                    <div style={{ fontSize: "12px", color: "var(--text-muted)" }}>{inv.customerEmail}</div>
                   </td>
                   <td style={{ padding: "14px 20px", fontWeight: "600" }}>
                     NPR {inv.totalAmount.toFixed(2)}
@@ -144,6 +169,12 @@ export default function CreditInvoices({ basePath }) {
                           Settle
                         </button>
                       )}
+                      <button 
+                        onClick={() => handleDelete(inv.id)}
+                        style={{ padding: "5px 10px", borderRadius: "4px", border: "1px solid #fee2e2", background: "transparent", color: "#dc2626", cursor: "pointer", fontSize: "12px", fontWeight: "600" }}
+                      >
+                        Delete
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -212,6 +243,7 @@ export default function CreditInvoices({ basePath }) {
                   <div style={{ fontSize: "12px", color: "var(--text-muted)", textTransform: "uppercase" }}>Customer</div>
                   <div style={{ fontWeight: "700" }}>{selectedInvoice?.customerName}</div>
                   <div style={{ fontSize: "13px" }}>{selectedInvoice?.customerPhone}</div>
+                  <div style={{ fontSize: "13px", color: "var(--text-muted)" }}>{selectedInvoice?.customerEmail}</div>
                 </div>
                 <div style={{ textAlign: "right" }}>
                   <div style={{ fontSize: "12px", color: "var(--text-muted)", textTransform: "uppercase" }}>Current Balance</div>
@@ -262,7 +294,20 @@ export default function CreditInvoices({ basePath }) {
               </tbody>
             </table>
 
-            <div style={{ marginTop: "24px", display: "flex", justifyContent: "flex-end" }}>
+            <div style={{ marginTop: "24px", display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+              <button 
+                onClick={() => handleSendReminder(selectedInvoice.id)}
+                disabled={sendingReminder || !selectedInvoice?.customerEmail}
+                style={{ 
+                  padding: "10px 20px", borderRadius: "6px", border: "none", 
+                  background: "#2563eb", color: "white", cursor: (sendingReminder || !selectedInvoice?.customerEmail) ? "not-allowed" : "pointer", 
+                  fontWeight: "600", display: "flex", alignItems: "center", gap: "8px",
+                  opacity: (sendingReminder || !selectedInvoice?.customerEmail) ? 0.7 : 1
+                }}
+              >
+                <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                {sendingReminder ? "Sending..." : "Send Email"}
+              </button>
               <button 
                 onClick={() => window.print()} 
                 style={{ padding: "10px 20px", borderRadius: "6px", border: "none", background: "#111", color: "white", cursor: "pointer", fontWeight: "600", display: "flex", alignItems: "center", gap: "8px" }}

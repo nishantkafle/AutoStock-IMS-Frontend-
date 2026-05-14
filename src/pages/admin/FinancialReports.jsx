@@ -409,8 +409,8 @@ function DailyTab() {
                     <tr
                       key={i}
                       onMouseEnter={(e) =>
-                        (e.currentTarget.style.background =
-                          "var(--surface-hover)")
+                      (e.currentTarget.style.background =
+                        "var(--surface-hover)")
                       }
                       onMouseLeave={(e) =>
                         (e.currentTarget.style.background = "transparent")
@@ -956,8 +956,8 @@ function YearlyTab() {
                     <tr
                       key={i}
                       onMouseEnter={(e) =>
-                        (e.currentTarget.style.background =
-                          "var(--surface-hover)")
+                      (e.currentTarget.style.background =
+                        "var(--surface-hover)")
                       }
                       onMouseLeave={(e) =>
                         (e.currentTarget.style.background = "transparent")

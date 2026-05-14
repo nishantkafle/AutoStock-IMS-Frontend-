@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Field, Btn, Alert } from "../../components/FormElements";
 
-const API = "https://localhost:7089/api";
+import { registerCustomer } from "../../services/customerService";
 
 export default function RegisterCustomer() {
   const navigate = useNavigate();
@@ -28,17 +28,7 @@ export default function RegisterCustomer() {
     setMsg({ text: "", ok: false });
     setLoading(true);
     try {
-      const token = localStorage.getItem("token");
-      const res = await fetch(`${API}/customers/register`, {
-        // correct endpoint
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify({ ...form, year: parseInt(form.year) }),
-      });
-      const data = await res.json();
+      const data = await registerCustomer({ ...form, year: parseInt(form.year) });
       if (data.success) {
         setMsg({
           text: "Customer registered! Login credentials have been emailed to them.",
@@ -61,9 +51,9 @@ export default function RegisterCustomer() {
           ok: false,
         });
       }
-    } catch {
+    } catch (err) {
       setMsg({
-        text: "Cannot connect to server. Make sure the backend is running.",
+        text: err.response?.data?.message || "Cannot connect to server. Make sure the backend is running.",
         ok: false,
       });
     } finally {
