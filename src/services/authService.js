@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "https://localhost:7089/api";
+const API = "http://localhost:5121/api";
 
 function handleError(err) {
   if (err.response?.data) {
@@ -17,6 +17,11 @@ export async function registerCustomer(data) {
   } catch (err) {
     return handleError(err);
   }
+}
+
+export async function verifyOtp(data) {
+  const res = await axios.post(`${API}/auth/verify-otp`, data);
+  return res.data;
 }
 
 export async function loginUser(data) {

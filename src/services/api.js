@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "https://localhost:7089/api";
+const API = "http://localhost:5121/api";
 
 // Helper - gets token from localStorage and builds auth header
 function authHeader() {
@@ -227,8 +227,6 @@ export const invoicesService = {
     axios
       .get(`${API}/invoices/${id}`, { headers: authHeader() })
       .then((r) => r.data),
-<<<<<<< Updated upstream
-=======
 
   sendEmail: (id, email) =>
     axios
@@ -237,6 +235,10 @@ export const invoicesService = {
         { email },
         { headers: authHeader() },
       )
+
+  sendEmail: (id, email) =>
+    axios
+      .post(`${API}/invoices/${id}/send-email`, { email }, { headers: authHeader() })
       .then((r) => r.data),
 
   settle: (id, data) =>
@@ -262,5 +264,6 @@ export const invoicesService = {
         { headers: authHeader() },
       )
       .then((r) => r.data),
->>>>>>> Stashed changes
+      .post(`${API}/invoices/${id}/send-credit-reminder`, {}, { headers: authHeader() })
+      .then((r) => r.data),
 };

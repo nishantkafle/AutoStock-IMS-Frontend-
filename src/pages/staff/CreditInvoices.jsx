@@ -90,10 +90,6 @@ export default function CreditInvoices({ basePath }) {
     }
   }
 
-  const initialPaidAmount = selectedInvoice 
-    ? selectedInvoice.paidAmount - selectedInvoice.settlements.reduce((sum, s) => sum + s.amount, 0)
-    : 0;
-
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
@@ -276,12 +272,12 @@ export default function CreditInvoices({ basePath }) {
                   <td style={{ padding: "12px 10px" }}>-</td>
                 </tr>
                 {/* Initial Paid Amount if any */}
-                {initialPaidAmount > 0.01 && (
+                {selectedInvoice?.paidAmount > 0 && selectedInvoice.settlements.length === 0 && (
                    <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
                    <td style={{ padding: "12px 10px", fontSize: "13px" }}>{new Date(selectedInvoice?.createdAt).toLocaleDateString()}</td>
                    <td style={{ padding: "12px 10px", fontSize: "13px" }}>Initial Down Payment</td>
                    <td style={{ padding: "12px 10px" }}>-</td>
-                   <td style={{ padding: "12px 10px", fontWeight: "600", color: "#15803d" }}>NPR {initialPaidAmount.toFixed(2)}</td>
+                   <td style={{ padding: "12px 10px", fontWeight: "600", color: "#15803d" }}>NPR {selectedInvoice?.paidAmount.toFixed(2)}</td>
                  </tr>
                 )}
                 {/* Settlements History */}

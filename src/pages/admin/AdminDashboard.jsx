@@ -7,9 +7,6 @@ import PartsManagement from "./PartsManagement";
 import AppointmentsAdmin from "./AppointmentsAdmin";
 import PartRequestsAdmin from "./PartRequestsAdmin";
 import Vendors from "./Vendors";
-<<<<<<< Updated upstream
-// Admin overview cards
-=======
 import PurchaseInvoices from "./PurchaseInvoices";
 import FinancialReports from "./FinancialReports";
 import AdminCustomerList from "./AdminCustomerList";
@@ -17,7 +14,13 @@ import AdminReviews from "./AdminReviews";
 import VehicleRecords from "../staff/VehicleRecords";
 import InvoiceDetails from "../staff/InvoiceDetails";
 
->>>>>>> Stashed changes
+import PurchaseInvoices from "./PurchaseInvoices";
+import CreditInvoices from "../staff/CreditInvoices";
+import FinancialReports from "./FinancialReports";
+import AdminCustomerList from "./AdminCustomerList";
+import SalesInvoices from "../staff/SalesInvoices";
+import InvoiceDetails from "../staff/InvoiceDetails";
+
 function Overview() {
   return (
     <div>
@@ -130,32 +133,31 @@ export default function AdminDashboard({ theme, toggleTheme }) {
         path="/purchase-invoices"
         element={
           <Page title="Purchase Invoices">
-            <Placeholder name="Purchase Invoices" />
+            <PurchaseInvoices />
           </Page>
         }
       />
-<<<<<<< Updated upstream
-      <Route
-        path="/sales"
-        element={
-          <Page title="Sales & Invoices">
-            <Placeholder name="Sales and Invoices" />
-          </Page>
-        }
-      />
-=======
 
       {/* Customers - admin view */}
+      <Route
+        path="/credit-invoices"
+        element={
+          <Page title="Credit Invoices">
+            <CreditInvoices basePath="/admin" />
+          </Page>
+        }
+      />
 
->>>>>>> Stashed changes
+      {/* Customers - admin view */}
       <Route
         path="/customers"
         element={
           <Page title="Customers">
-            <Placeholder name="Customer List" />
+            <AdminCustomerList />
           </Page>
         }
       />
+
       <Route
         path="/vehicles"
         element={
@@ -192,7 +194,7 @@ export default function AdminDashboard({ theme, toggleTheme }) {
         path="/reports"
         element={
           <Page title="Financial Reports">
-            <Placeholder name="Financial Reports" />
+            <FinancialReports />
           </Page>
         }
       />
