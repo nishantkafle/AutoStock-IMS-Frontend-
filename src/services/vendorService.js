@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "http://localhost:5121/api/vendors";
+const API = "https://localhost:7089/api/vendors";
 
 // Helper to get headers
 const getHeaders = () => {

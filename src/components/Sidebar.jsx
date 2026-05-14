@@ -31,8 +31,6 @@ const menus = {
       icon: Receipt,
     },
 
-    { label: "Sales & Invoices", path: "/admin/sales", icon: ShoppingCart },
-    { label: "Credit Invoices", path: "/admin/credit-invoices", icon: Receipt },
     { label: "Customers", path: "/admin/customers", icon: Users },
     { label: "Vehicles", path: "/admin/vehicles", icon: Car },
     { label: "Appointments", path: "/admin/appointments", icon: Calendar },

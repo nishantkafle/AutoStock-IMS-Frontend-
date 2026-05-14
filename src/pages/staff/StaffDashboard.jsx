@@ -70,7 +70,7 @@ export default function StaffDashboard({ theme, toggleTheme }) {
       <Route path="/customers" element={<Page title="Customer List"><CustomerList /></Page>} />
       <Route path="/register-customer" element={<Page title="Register Customer"><RegisterCustomer /></Page>} />
       <Route path="/customers/:id" element={<Page title="Customer Details"><CustomerDetails /></Page>} />
-      <Route path="/vehicles" element={<Page title="Vehicle Records"><Placeholder name="Vehicle Records" /></Page>} />
+      <Route path="/vehicles" element={<Page title="Vehicle Records"><VehicleRecords /></Page>} />
       <Route path="/sales" element={<Page title="Sales & Invoices"><SalesInvoices /></Page>} />
       <Route path="/credit-invoices" element={<Page title="Credit Invoices"><CreditInvoices basePath="/staff" /></Page>} />
       <Route path="/sales/new" element={<Page title="Create Invoice"><CreateInvoice /></Page>} />

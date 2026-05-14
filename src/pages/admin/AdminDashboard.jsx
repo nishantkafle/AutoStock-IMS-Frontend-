@@ -13,13 +13,8 @@ import AdminCustomerList from "./AdminCustomerList";
 import AdminReviews from "./AdminReviews";
 import VehicleRecords from "../staff/VehicleRecords";
 import InvoiceDetails from "../staff/InvoiceDetails";
-
-import PurchaseInvoices from "./PurchaseInvoices";
 import CreditInvoices from "../staff/CreditInvoices";
-import FinancialReports from "./FinancialReports";
-import AdminCustomerList from "./AdminCustomerList";
 import SalesInvoices from "../staff/SalesInvoices";
-import InvoiceDetails from "../staff/InvoiceDetails";
 
 function Overview() {
   return (
