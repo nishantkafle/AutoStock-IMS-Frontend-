@@ -40,6 +40,14 @@ export async function searchCustomers(keyword) {
 
 // Feature 9: Get regular customers report
 export async function getRegularCustomers() {
+  const token = localStorage.getItem("token");
+  const response = await axios.get(`${API}/customers/reports/regulars`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+
+// Feature 9: Get regular customers report
+export async function getRegularCustomers() {
     const token = localStorage.getItem("token");
     const response = await axios.get(`${API}/customers/reports/regulars`, {
         headers: { Authorization: `Bearer ${token}` }
@@ -58,6 +66,12 @@ export async function getHighSpenders() {
 
 // Feature 9: Get pending credits report
 export async function getPendingCredits() {
+  const token = localStorage.getItem("token");
+  const response = await axios.get(`${API}/customers/reports/pending-credits`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+}
     const token = localStorage.getItem("token");
     const response = await axios.get(`${API}/customers/reports/pending-credits`, {
         headers: { Authorization: `Bearer ${token}` }

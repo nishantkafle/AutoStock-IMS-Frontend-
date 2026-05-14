@@ -1,13 +1,19 @@
 import { Routes, Route } from "react-router-dom";
 import DashboardLayout from "../../components/DashboardLayout";
 import StatCard from "../../components/StatCard";
-import Placeholder from "../../components/Placeholder";
 import Profile from "../profile/Profile";
 import StaffManagement from "./StaffManagement";
 import PartsManagement from "./PartsManagement";
 import AppointmentsAdmin from "./AppointmentsAdmin";
 import PartRequestsAdmin from "./PartRequestsAdmin";
 import Vendors from "./Vendors";
+import PurchaseInvoices from "./PurchaseInvoices";
+import FinancialReports from "./FinancialReports";
+import AdminCustomerList from "./AdminCustomerList";
+import AdminReviews from "./AdminReviews";
+import VehicleRecords from "../staff/VehicleRecords";
+import InvoiceDetails from "../staff/InvoiceDetails";
+
 import PurchaseInvoices from "./PurchaseInvoices";
 import CreditInvoices from "../staff/CreditInvoices";
 import FinancialReports from "./FinancialReports";
@@ -141,6 +147,8 @@ export default function AdminDashboard({ theme, toggleTheme }) {
           </Page>
         }
       />
+
+      {/* Customers - admin view */}
       <Route
         path="/customers"
         element={
@@ -154,7 +162,7 @@ export default function AdminDashboard({ theme, toggleTheme }) {
         path="/vehicles"
         element={
           <Page title="Vehicles">
-            <Placeholder name="Vehicle Records" />
+            <VehicleRecords />
           </Page>
         }
       />
@@ -178,7 +186,7 @@ export default function AdminDashboard({ theme, toggleTheme }) {
         path="/reviews"
         element={
           <Page title="Reviews">
-            <Placeholder name="Reviews" />
+            <AdminReviews />
           </Page>
         }
       />

@@ -99,6 +99,7 @@ export default function Profile() {
 
   // Name edit state
   const [fullName, setFullName] = useState(user?.fullName || "");
+  const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber || "");
   const [nameMsg, setNameMsg] = useState("");
   const [nameSaving, setNameSaving] = useState(false);
 
@@ -111,8 +112,8 @@ export default function Profile() {
   const [pwMsg, setPwMsg] = useState({ text: "", ok: false });
   const [pwSaving, setPwSaving] = useState(false);
 
-  // Save display name - updates local context
-  async function handleSaveName(e) {
+  // Save profile info - updates backend and local context
+  async function handleSaveProfile(e) {
     e.preventDefault();
     if (!fullName.trim()) {
       setNameMsg("Name cannot be empty");
@@ -120,12 +121,25 @@ export default function Profile() {
     }
     setNameSaving(true);
     setNameMsg("");
-    // Backend call goes here when ready
-    setTimeout(() => {
-      updateUser({ fullName: fullName.trim() });
-      setNameMsg("Name updated successfully");
+    
+    try {
+      // Assuming profileService is imported from api.js
+      const { profileService } = await import("../../services/api");
+      await profileService.update({ 
+        fullName: fullName.trim(),
+        phoneNumber: phoneNumber.trim() 
+      });
+      
+      updateUser({ 
+        fullName: fullName.trim(),
+        phoneNumber: phoneNumber.trim()
+      });
+      setNameMsg("Profile updated successfully");
+    } catch (err) {
+      setNameMsg("Failed to update profile");
+    } finally {
       setNameSaving(false);
-    }, 600);
+    }
   }
 
   // Change password via backend
@@ -202,14 +216,21 @@ export default function Profile() {
         <Field label="Role" value={user?.role || ""} readOnly />
       </Section>
 
-      {/* Edit display name */}
-      <Section title="Display Name">
-        <form onSubmit={handleSaveName}>
+      {/* Edit display name and phone */}
+      <Section title="Personal Information">
+        <form onSubmit={handleSaveProfile}>
           <Field
             label="Full Name"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
             placeholder="Your full name"
+          />
+          
+          <Field
+            label="Phone Number"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            placeholder="Your phone number"
           />
 
           {nameMsg && (
@@ -248,7 +269,7 @@ export default function Profile() {
                 e.currentTarget.style.background = "var(--accent)";
             }}
           >
-            {nameSaving ? "Saving..." : "Save Name"}
+            {nameSaving ? "Saving..." : "Save Changes"}
           </button>
         </form>
       </Section>

@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import DashboardLayout from "../../components/DashboardLayout";
 import StatCard from "../../components/StatCard";
-import Placeholder from "../../components/Placeholder";
+import VehicleRecords from "./VehicleRecords";
 import Profile from "../profile/Profile";
 import RegisterCustomer from "./RegisterCustomer";
 import CustomerList from "./CustomerList";
