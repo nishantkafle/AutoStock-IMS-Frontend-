@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import DashboardLayout from "../../components/DashboardLayout";
 import StatCard from "../../components/StatCard";
-import Placeholder from "../../components/Placeholder";
+import VehicleRecords from "./VehicleRecords";
 import Profile from "../profile/Profile";
 import RegisterCustomer from "./RegisterCustomer";
 import CustomerList from "./CustomerList";
@@ -95,6 +95,7 @@ export default function StaffDashboard({ theme, toggleTheme }) {
 
   return (
     <Routes>
+<<<<<<< Updated upstream
       <Route
         path="/"
         element={
@@ -196,6 +197,22 @@ export default function StaffDashboard({ theme, toggleTheme }) {
           </Page>
         }
       />
+=======
+      <Route path="/" element={<Page title="Dashboard"><Overview /></Page>} />
+      <Route path="/customers" element={<Page title="Customer List"><CustomerList /></Page>} />
+      <Route path="/register-customer" element={<Page title="Register Customer"><RegisterCustomer /></Page>} />
+      <Route path="/customers/:id" element={<Page title="Customer Details"><CustomerDetails /></Page>} />
+      <Route path="/vehicles" element={<Page title="Vehicle Records"><VehicleRecords /></Page>} />
+      <Route path="/sales" element={<Page title="Sales & Invoices"><SalesInvoices /></Page>} />
+      <Route path="/credit-invoices" element={<Page title="Credit Invoices"><CreditInvoices basePath="/staff" /></Page>} />
+      <Route path="/sales/new" element={<Page title="Create Invoice"><CreateInvoice /></Page>} />
+      <Route path="/sales/:id" element={<Page title="Invoice Details"><InvoiceDetails /></Page>} />
+      <Route path="/sales/edit/:id" element={<Page title="Edit Invoice"><EditInvoice /></Page>} />
+      <Route path="/appointments" element={<Page title="Appointments"><AppointmentsAdmin /></Page>} />
+      <Route path="/part-requests" element={<Page title="Part Requests"><PartRequestsAdmin /></Page>} />
+      <Route path="/reports" element={<Page title="Customer Reports"><CustomerReports /></Page>} />
+      <Route path="/profile" element={<Page title="Profile"><Profile /></Page>} />
+>>>>>>> Stashed changes
     </Routes>
   );
 }

@@ -69,7 +69,7 @@ export default function PartRequestsAdmin() {
             marginTop: "2px",
           }}
         >
-          Customer requests for parts not currently in stock
+          Customer requests for parts
         </p>
       </div>
 
@@ -110,6 +110,9 @@ export default function PartRequestsAdmin() {
                 {[
                   "Customer",
                   "Part Name",
+                  "Qty",
+                  "Price",
+                  "Paid",
                   "Urgency",
                   "Status",
                   "Requested",
@@ -126,6 +129,14 @@ export default function PartRequestsAdmin() {
                 <tr key={r.id}>
                   <td style={tdStyle}>{r.customerName}</td>
                   <td style={tdStyle}>{r.partName}</td>
+                  <td style={tdStyle}>{r.quantity}</td>
+                  <td style={tdStyle}>Rs.{r.price.toFixed(2)}</td>
+                  <td style={tdStyle}>
+                    <Badge
+                      text={r.isPaid ? "Yes" : "No"}
+                      color={r.isPaid ? "green" : "muted"}
+                    />
+                  </td>
                   <td style={tdStyle}>{urgencyBadge(r.urgency)}</td>
                   <td style={tdStyle}>{statusBadge(r.status)}</td>
                   <td style={{ ...tdStyle, color: "var(--text-muted)" }}>

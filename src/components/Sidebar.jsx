@@ -53,6 +53,17 @@ const menus = {
         { label: "Financial Reports", path: "/admin/reports", icon: BarChart2 },
       ],
     },
+<<<<<<< Updated upstream
+=======
+
+    { label: "Customers", path: "/admin/customers", icon: Users },
+    { label: "Vehicles", path: "/admin/vehicles", icon: Car },
+    { label: "Appointments", path: "/admin/appointments", icon: Calendar },
+    { label: "Part Requests", path: "/admin/part-requests", icon: Inbox },
+    { label: "Reviews", path: "/admin/reviews", icon: Star },
+    { label: "Staff & Roles", path: "/admin/staff", icon: UserCog },
+    { label: "Financial Reports", path: "/admin/reports", icon: BarChart2 },
+>>>>>>> Stashed changes
   ],
 
   Staff: [

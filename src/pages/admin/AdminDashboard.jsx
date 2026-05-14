@@ -1,14 +1,23 @@
 import { Routes, Route } from "react-router-dom";
 import DashboardLayout from "../../components/DashboardLayout";
 import StatCard from "../../components/StatCard";
-import Placeholder from "../../components/Placeholder";
 import Profile from "../profile/Profile";
 import StaffManagement from "./StaffManagement";
 import PartsManagement from "./PartsManagement";
 import AppointmentsAdmin from "./AppointmentsAdmin";
 import PartRequestsAdmin from "./PartRequestsAdmin";
 import Vendors from "./Vendors";
+<<<<<<< Updated upstream
 // Admin overview cards
+=======
+import PurchaseInvoices from "./PurchaseInvoices";
+import FinancialReports from "./FinancialReports";
+import AdminCustomerList from "./AdminCustomerList";
+import AdminReviews from "./AdminReviews";
+import VehicleRecords from "../staff/VehicleRecords";
+import InvoiceDetails from "../staff/InvoiceDetails";
+
+>>>>>>> Stashed changes
 function Overview() {
   return (
     <div>
@@ -125,6 +134,7 @@ export default function AdminDashboard({ theme, toggleTheme }) {
           </Page>
         }
       />
+<<<<<<< Updated upstream
       <Route
         path="/sales"
         element={
@@ -133,6 +143,11 @@ export default function AdminDashboard({ theme, toggleTheme }) {
           </Page>
         }
       />
+=======
+
+      {/* Customers - admin view */}
+
+>>>>>>> Stashed changes
       <Route
         path="/customers"
         element={
@@ -145,7 +160,7 @@ export default function AdminDashboard({ theme, toggleTheme }) {
         path="/vehicles"
         element={
           <Page title="Vehicles">
-            <Placeholder name="Vehicle Records" />
+            <VehicleRecords />
           </Page>
         }
       />
@@ -169,7 +184,7 @@ export default function AdminDashboard({ theme, toggleTheme }) {
         path="/reviews"
         element={
           <Page title="Reviews">
-            <Placeholder name="Reviews" />
+            <AdminReviews />
           </Page>
         }
       />

@@ -1,22 +1,22 @@
 import { useState, useEffect } from "react";
-import { reviewService } from "../../services/api";
+import { reviewService, partRequestService } from "../../services/api";
 import Modal from "../../components/Modal";
 import {
   Field,
   Btn,
   Alert,
+  Badge,
   tableStyle,
   thStyle,
   tdStyle,
 } from "../../components/FormElements";
 
-// Visual star display - just text dashes as ratings
 function Stars({ rating }) {
   return (
     <span
       style={{ color: "var(--accent)", fontWeight: 700, letterSpacing: "2px" }}
     >
-      {"- ".repeat(rating).trim()}{" "}
+      {"★ ".repeat(rating).trim()}{" "}
       <span style={{ color: "var(--text-muted)", fontWeight: 400 }}>
         ({rating}/5)
       </span>
@@ -24,16 +24,38 @@ function Stars({ rating }) {
   );
 }
 
-function ReviewForm({ onSubmit, onClose, saving }) {
-  const [form, setForm] = useState({ rating: "5", comment: "" });
+function ReviewForm({ onSubmit, onClose, saving, reviewableParts }) {
+  const [form, setForm] = useState({
+    partRequestId: "",
+    rating: "5",
+    comment: "",
+  });
 
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        onSubmit(form);
+        onSubmit({
+          partRequestId: form.partRequestId || null,
+          rating: parseInt(form.rating),
+          comment: form.comment,
+        });
       }}
     >
+      <Field
+        label="Part Request"
+        as="select"
+        value={form.partRequestId}
+        onChange={(e) => setForm({ ...form, partRequestId: e.target.value })}
+        required
+      >
+        <option value="">Select a paid part request</option>
+        {reviewableParts.map((pr) => (
+          <option key={pr.id} value={pr.id}>
+            {pr.partName} — Rs.{(pr.price * pr.quantity).toFixed(2)}
+          </option>
+        ))}
+      </Field>
       <Field
         label="Rating (1 to 5)"
         as="select"
@@ -51,7 +73,7 @@ function ReviewForm({ onSubmit, onClose, saving }) {
         as="textarea"
         value={form.comment}
         onChange={(e) => setForm({ ...form, comment: e.target.value })}
-        placeholder="Share your experience with AutoStock"
+        placeholder="Share your experience"
       />
       <div
         style={{
@@ -64,7 +86,7 @@ function ReviewForm({ onSubmit, onClose, saving }) {
         <Btn variant="ghost" onClick={onClose}>
           Cancel
         </Btn>
-        <Btn type="submit" disabled={saving}>
+        <Btn type="submit" disabled={saving || !form.partRequestId}>
           {saving ? "Submitting..." : "Submit Review"}
         </Btn>
       </div>
@@ -75,21 +97,24 @@ function ReviewForm({ onSubmit, onClose, saving }) {
 export default function CustomerReviews() {
   const [myReviews, setMyReviews] = useState([]);
   const [allReviews, setAllReviews] = useState([]);
+  const [paidRequests, setPaidRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState({ text: "", ok: false });
-  const [tab, setTab] = useState("all"); // "all" or "mine"
+  const [tab, setTab] = useState("all");
 
   async function load() {
     setLoading(true);
     try {
-      const [myRes, allRes] = await Promise.all([
+      const [myRes, allRes, prRes] = await Promise.all([
         reviewService.getMine(),
         reviewService.getAll(),
+        partRequestService.getMine(),
       ]);
       if (myRes.success) setMyReviews(myRes.data);
       if (allRes.success) setAllReviews(allRes.data);
+      if (prRes.success) setPaidRequests(prRes.data);
     } catch {
       setMsg({ text: "Failed to load reviews", ok: false });
     } finally {
@@ -101,13 +126,21 @@ export default function CustomerReviews() {
     load();
   }, []);
 
+  const reviewedIds = myReviews
+    .filter((r) => r.partRequestId)
+    .map((r) => r.partRequestId);
+
+  const reviewableParts = paidRequests.filter(
+    (pr) =>
+      pr.isPaid &&
+      pr.status === "Fulfilled" &&
+      !reviewedIds.includes(pr.id),
+  );
+
   async function handleSubmit(form) {
     setSaving(true);
     try {
-      const res = await reviewService.create({
-        rating: parseInt(form.rating),
-        comment: form.comment,
-      });
+      const res = await reviewService.create(form);
       if (res.success) {
         setShowAdd(false);
         setMsg({ text: "Review submitted", ok: true });
@@ -164,15 +197,19 @@ export default function CustomerReviews() {
               marginTop: "2px",
             }}
           >
-            Share your experience with AutoStock
+            Review your fulfilled and paid part requests
           </p>
         </div>
-        <Btn onClick={() => setShowAdd(true)}>Write Review</Btn>
+        <Btn
+          onClick={() => setShowAdd(true)}
+          disabled={reviewableParts.length === 0}
+        >
+          Write Review
+        </Btn>
       </div>
 
       {msg.text && <Alert text={msg.text} ok={msg.ok} />}
 
-      {/* Tabs */}
       <div
         style={{
           display: "flex",
@@ -243,8 +280,8 @@ export default function CustomerReviews() {
             <thead>
               <tr>
                 {(tab === "all"
-                  ? ["Customer", "Rating", "Comment", "Date"]
-                  : ["Rating", "Comment", "Date", "Action"]
+                  ? ["Customer", "Part", "Rating", "Comment", "Date"]
+                  : ["Part", "Rating", "Comment", "Date", "Action"]
                 ).map((h) => (
                   <th key={h} style={thStyle}>
                     {h}
@@ -256,6 +293,7 @@ export default function CustomerReviews() {
               {displayed.map((r) => (
                 <tr key={r.id}>
                   {tab === "all" && <td style={tdStyle}>{r.customerName}</td>}
+                  <td style={tdStyle}>{r.partName || "-"}</td>
                   <td style={tdStyle}>
                     <Stars rating={r.rating} />
                   </td>
@@ -289,9 +327,11 @@ export default function CustomerReviews() {
             onSubmit={handleSubmit}
             onClose={() => setShowAdd(false)}
             saving={saving}
+            reviewableParts={reviewableParts}
           />
         </Modal>
       )}
     </div>
   );
 }
+

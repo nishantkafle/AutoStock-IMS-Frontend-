@@ -75,10 +75,14 @@ export const vendorService = {
     axios.get(`${API}/vendors`, { headers: authHeader() }).then((r) => r.data),
 };
 
-// VEHICLE SERVICE
 export const vehicleService = {
   getMine: () =>
     axios.get(`${API}/vehicles`, { headers: authHeader() }).then((r) => r.data),
+
+  getAll: () =>
+    axios
+      .get(`${API}/vehicles/all`, { headers: authHeader() })
+      .then((r) => r.data),
 
   add: (data) =>
     axios
@@ -93,6 +97,14 @@ export const vehicleService = {
   delete: (id) =>
     axios
       .delete(`${API}/vehicles/${id}`, { headers: authHeader() })
+      .then((r) => r.data),
+};
+
+// CUSTOMER SERVICE
+export const customerService = {
+  getAll: () =>
+    axios
+      .get(`${API}/customers`, { headers: authHeader() })
       .then((r) => r.data),
 };
 
@@ -128,7 +140,6 @@ export const appointmentService = {
       .then((r) => r.data),
 };
 
-// PART REQUEST SERVICE
 export const partRequestService = {
   getMine: () =>
     axios
@@ -157,6 +168,11 @@ export const partRequestService = {
         {},
         { headers: authHeader() },
       )
+      .then((r) => r.data),
+
+  pay: (id) =>
+    axios
+      .post(`${API}/partrequests/${id}/pay`, {}, { headers: authHeader() })
       .then((r) => r.data),
 };
 
@@ -211,4 +227,40 @@ export const invoicesService = {
     axios
       .get(`${API}/invoices/${id}`, { headers: authHeader() })
       .then((r) => r.data),
+<<<<<<< Updated upstream
+=======
+
+  sendEmail: (id, email) =>
+    axios
+      .post(
+        `${API}/invoices/${id}/send-email`,
+        { email },
+        { headers: authHeader() },
+      )
+      .then((r) => r.data),
+
+  settle: (id, data) =>
+    axios
+      .post(`${API}/invoices/${id}/settle`, data, { headers: authHeader() })
+      .then((r) => r.data),
+
+  delete: (id) =>
+    axios
+      .delete(`${API}/invoices/${id}`, { headers: authHeader() })
+      .then((r) => r.data),
+
+  update: (id, data) =>
+    axios
+      .put(`${API}/invoices/${id}`, data, { headers: authHeader() })
+      .then((r) => r.data),
+
+  sendCreditReminder: (id) =>
+    axios
+      .post(
+        `${API}/invoices/${id}/send-credit-reminder`,
+        {},
+        { headers: authHeader() },
+      )
+      .then((r) => r.data),
+>>>>>>> Stashed changes
 };
