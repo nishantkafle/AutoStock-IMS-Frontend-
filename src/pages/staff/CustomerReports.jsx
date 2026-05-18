@@ -17,7 +17,7 @@ export default function CustomerReports() {
             if (type === "regulars") result = await getRegularCustomers();
             else if (type === "high-spenders") result = await getHighSpenders();
             else if (type === "pending-credits") result = await getPendingCredits();
-            setCustomers(result.data || []);
+            setCustomers(result?.data || []);
         } catch (err) {
             setError("Failed to load report");
         } finally {
@@ -94,7 +94,7 @@ export default function CustomerReports() {
                         textTransform: "uppercase", letterSpacing: "0.5px",
                         color: "var(--text-muted)", marginBottom: "12px"
                     }}>
-                        {reportTitle[reportType]} — {customers.length} result(s)
+                        {reportTitle[reportType]} - {customers.length} result(s)
                     </div>
                     <div style={{
                         background: "var(--card-bg)",
@@ -107,7 +107,7 @@ export default function CustomerReports() {
                                 <tr style={{ background: "var(--card-border)" }}>
                                     {["Full Name", "Email", "Phone",
                                         ...(reportType === "high-spenders" ? ["Total Spent"] : []),
-                                        "Registered"
+                                        ...(reportType === "pending-credits" ? ["Pending Balance"] : ["Registered"])
                                     ].map(h => (
                                         <th key={h} style={{
                                             padding: "10px 16px", textAlign: "left",
@@ -140,9 +140,15 @@ export default function CustomerReports() {
                                                 Rs. {c.totalSpent?.toFixed(2)}
                                             </td>
                                         )}
-                                        <td style={{ padding: "12px 16px", fontSize: "13px", color: "var(--text-muted)" }}>
-                                            {new Date(c.createdAt).toLocaleDateString()}
-                                        </td>
+                                        {reportType === "pending-credits" ? (
+                                            <td style={{ padding: "12px 16px", fontSize: "13.5px", fontWeight: 600, color: "#dc2626" }}>
+                                                Rs. {c.pendingCredit?.toFixed(2)}
+                                            </td>
+                                        ) : (
+                                            <td style={{ padding: "12px 16px", fontSize: "13px", color: "var(--text-muted)" }}>
+                                                {new Date(c.createdAt).toLocaleDateString()}
+                                            </td>
+                                        )}
                                     </tr>
                                 ))}
                             </tbody>

@@ -74,7 +74,7 @@ export default function RegisterCustomer() {
   };
 
   return (
-    <div style={{ maxWidth: "560px" }}>
+    <div style={{ maxWidth: "560px", margin: "0 auto", padding: "20px 0" }}>
       {/* Page heading */}
       <div style={{ marginBottom: "24px" }}>
         <h1

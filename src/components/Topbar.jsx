@@ -1,4 +1,4 @@
-import { Sun, Moon, Bell } from "lucide-react";
+import { Sun, Moon } from "lucide-react";
 
 // Top bar
 export default function Topbar({ title, theme, toggleTheme }) {
@@ -48,34 +48,6 @@ export default function Topbar({ title, theme, toggleTheme }) {
 
       {/* Right side*/}
       <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-        {/* Notification bell*/}
-        <button
-          title="Notifications"
-          style={iconBtn}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = "var(--surface-2)";
-            e.currentTarget.style.color = "var(--text)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = "transparent";
-            e.currentTarget.style.color = "var(--text-muted)";
-          }}
-        >
-          <Bell size={17} />
-          <span
-            style={{
-              position: "absolute",
-              top: "7px",
-              right: "7px",
-              width: 7,
-              height: 7,
-              background: "var(--error)",
-              borderRadius: "50%",
-              border: "1.5px solid var(--topbar-bg)",
-            }}
-          />
-        </button>
-
         {/* Theme toggle */}
         <button
           onClick={toggleTheme}

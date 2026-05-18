@@ -52,7 +52,7 @@ function ReviewForm({ onSubmit, onClose, saving, reviewableParts }) {
         <option value="">Select a paid part request</option>
         {reviewableParts.map((pr) => (
           <option key={pr.id} value={pr.id}>
-            {pr.partName} — Rs.{(pr.price * pr.quantity).toFixed(2)}
+            {pr.partName} - Rs.{(pr.price * pr.quantity).toFixed(2)}
           </option>
         ))}
       </Field>

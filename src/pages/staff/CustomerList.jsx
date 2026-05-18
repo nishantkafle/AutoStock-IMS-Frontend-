@@ -60,9 +60,9 @@ export default function CustomerList() {
                 <button
                     onClick={() => navigate("/staff/register-customer")}
                     style={{
-                        padding: "9px 18px", background: "#111", color: "white",
+                        padding: "9px 18px", background: "var(--primary, #2563eb)", color: "white",
                         border: "none", borderRadius: "6px", fontSize: "13.5px",
-                        fontWeight: 500, cursor: "pointer"
+                        fontWeight: 600, cursor: "pointer"
                     }}
                 >
                     + Register Customer
@@ -82,15 +82,16 @@ export default function CustomerList() {
                         flex: 1, padding: "9px 14px",
                         fontSize: "13.5px", borderRadius: "6px",
                         border: "1px solid var(--card-border)",
+                        background: "var(--bg)", color: "var(--text)",
                         outline: "none"
                     }}
                 />
                 <button
                     type="submit"
                     style={{
-                        padding: "9px 20px", background: "#111", color: "white",
+                        padding: "9px 20px", background: "var(--text)", color: "var(--bg)",
                         border: "none", borderRadius: "6px", fontSize: "13.5px",
-                        fontWeight: 500, cursor: "pointer"
+                        fontWeight: 600, cursor: "pointer"
                     }}
                 >
                     Search
@@ -100,7 +101,7 @@ export default function CustomerList() {
                         type="button"
                         onClick={() => { setKeyword(""); fetchCustomers(); }}
                         style={{
-                            padding: "9px 16px", background: "transparent",
+                            padding: "9px 16px", background: "transparent", color: "var(--text)",
                             border: "1px solid var(--card-border)",
                             borderRadius: "6px", fontSize: "13.5px",
                             cursor: "pointer"
@@ -156,7 +157,7 @@ export default function CustomerList() {
                                     <td style={{ padding: "12px 16px", fontSize: "12px", color: "var(--text-muted)", fontFamily: "monospace" }}>
                                         {c.id.substring(0, 8)}...
                                     </td>
-                                    <td style={{ padding: "12px 16px", fontSize: "14px", fontWeight: 500 }}>
+                                    <td style={{ padding: "12px 16px", fontSize: "14px", fontWeight: 600, color: "var(--text)" }}>
                                         {c.fullName}
                                     </td>
                                     <td style={{ padding: "12px 16px", fontSize: "13.5px", color: "var(--text-muted)" }}>
@@ -165,7 +166,7 @@ export default function CustomerList() {
                                     <td style={{ padding: "12px 16px", fontSize: "13.5px", color: "var(--text-muted)" }}>
                                         {c.phoneNumber}
                                     </td>
-                                    <td style={{ padding: "12px 16px", fontSize: "13.5px" }}>
+                                    <td style={{ padding: "12px 16px", fontSize: "13.5px", color: "var(--text)" }}>
                                         {c.vehicles?.length || 0} vehicle(s)
                                     </td>
                                     <td style={{ padding: "12px 16px", fontSize: "13px", color: "var(--text-muted)" }}>
@@ -175,10 +176,10 @@ export default function CustomerList() {
                                         <button
                                             onClick={() => navigate(`/staff/customers/${c.id}`)}
                                             style={{
-                                                padding: "5px 12px", background: "transparent",
+                                                padding: "5px 12px", background: "transparent", color: "var(--text)",
                                                 border: "1px solid var(--card-border)",
                                                 borderRadius: "4px", fontSize: "12.5px",
-                                                cursor: "pointer", fontWeight: 500
+                                                cursor: "pointer", fontWeight: 600
                                             }}
                                         >
                                             View

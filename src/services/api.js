@@ -261,3 +261,13 @@ export const invoicesService = {
       )
       .then((r) => r.data),
 };
+
+// REPORTS SERVICE
+export const reportsService = {
+  getMonthly: (year, month) =>
+    axios
+      .get(`${API}/reports/financial/monthly?year=${year}&month=${month}`, {
+        headers: authHeader(),
+      })
+      .then((r) => r.data),
+};

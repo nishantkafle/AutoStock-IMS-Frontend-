@@ -44,7 +44,7 @@ function RequestForm({ onSubmit, onClose, saving, parts }) {
         <option value="">Select a part</option>
         {parts.map((p) => (
           <option key={p.id} value={p.id}>
-            {p.name} — Rs.{p.price} (Stock: {p.stockQty})
+            {p.name} - Rs.{p.price} (Stock: {p.stockQty})
           </option>
         ))}
       </Field>

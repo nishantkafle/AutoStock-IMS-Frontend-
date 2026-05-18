@@ -22,7 +22,7 @@ import Logo from "./Logo";
 // Menu items per role
 const menus = {
   Admin: [
-    { label: "Overview", path: "/admin", icon: LayoutDashboard },
+    { label: "Dashboard", path: "/admin", icon: LayoutDashboard },
     { label: "Inventory", path: "/admin/inventory", icon: Package },
     { label: "Vendors", path: "/admin/vendors", icon: Building2 },
     {
@@ -41,7 +41,7 @@ const menus = {
   ],
 
   Staff: [
-    { label: "Overview", path: "/staff", icon: LayoutDashboard },
+    { label: "Dashboard", path: "/staff", icon: LayoutDashboard },
     { label: "Customer List", path: "/staff/customers", icon: Users },
     {
       label: "Register Customer",
