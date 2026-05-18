@@ -10,8 +10,8 @@ const getHeaders = () => {
   };
 };
 
-export async function getAllVendors() {
-  const response = await axios.get(API, getHeaders());
+export async function getAllVendors(page = 1, pageSize = 7) {
+  const response = await axios.get(`${API}?page=${page}&pageSize=${pageSize}`, getHeaders());
   return response.data;
 }
 

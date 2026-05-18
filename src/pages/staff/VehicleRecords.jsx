@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { vehicleService } from "../../services/api";
+import Pagination from "../../components/Pagination";
 import {
   Alert,
   tableStyle,
@@ -11,12 +12,19 @@ export default function VehicleRecords() {
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [msg, setMsg] = useState({ text: "", ok: false });
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
 
   useEffect(() => {
     async function load() {
       try {
-        const res = await vehicleService.getAll();
-        if (res.success) setVehicles(res.data);
+        const res = await vehicleService.getAll(page, 7);
+        if (res.success) {
+          setVehicles(res.data);
+          setTotalPages(res.meta?.totalPages || 1);
+          setTotalCount(res.meta?.totalCount || 0);
+        }
       } catch {
         setMsg({ text: "Failed to load vehicles", ok: false });
       } finally {
@@ -24,7 +32,7 @@ export default function VehicleRecords() {
       }
     }
     load();
-  }, []);
+  }, [page]);
 
   return (
     <div>
@@ -117,6 +125,13 @@ export default function VehicleRecords() {
             </tbody>
           </table>
         )}
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          totalCount={totalCount}
+          pageSize={7}
+          onPageChange={setPage}
+        />
       </div>
     </div>
   );

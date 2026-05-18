@@ -3,23 +3,29 @@ import {
   getAllCustomers,
   searchCustomers,
 } from "../../services/customerService";
+import Pagination from "../../components/Pagination";
 
 export default function AdminCustomerList() {
   const [customers, setCustomers] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [keyword, setKeyword] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
 
   useEffect(() => {
     fetchCustomers();
-  }, []);
+  }, [page]);
 
   async function fetchCustomers() {
     try {
       setLoading(true);
       setError("");
-      const result = await getAllCustomers();
+      const result = await getAllCustomers(page, 7);
       setCustomers(result.data || []);
+      setTotalPages(result.meta?.totalPages || 1);
+      setTotalCount(result.meta?.totalCount || 0);
     } catch {
       setError("Failed to load customers.");
     } finally {
@@ -293,6 +299,13 @@ export default function AdminCustomerList() {
               ))}
             </tbody>
           </table>
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            totalCount={totalCount}
+            pageSize={7}
+            onPageChange={setPage}
+          />
         </div>
       )}
     </div>

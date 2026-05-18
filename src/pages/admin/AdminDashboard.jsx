@@ -18,7 +18,7 @@ import InvoiceDetails from "../staff/InvoiceDetails";
 import CreditInvoices from "../staff/CreditInvoices";
 import SalesInvoices from "../staff/SalesInvoices";
 import { invoicesService, customerService, partsService, reportsService } from "../../services/api";
-import { Package } from "lucide-react";
+import { Package, Bell } from "lucide-react";
 
 function Overview() {
   const { user } = useAuth();
@@ -29,6 +29,7 @@ function Overview() {
     customersCount: 0,
     newCustomersCount: 0,
     lowStockCount: 0,
+    lowStockItems: [],
     revenueTrend: [],
     recentSales: [],
   });
@@ -39,8 +40,8 @@ function Overview() {
         setLoading(true);
         const now = new Date();
         const [invRes, custRes, lowRes, repRes] = await Promise.all([
-          invoicesService.getAll().catch(() => []),
-          customerService.getAll().catch(() => ({ data: [] })),
+          invoicesService.getAll(1, 1000).catch(() => []),
+          customerService.getAll(1, 1000).catch(() => ({ data: [] })),
           partsService.getLowStock().catch(() => ({ data: [] })),
           reportsService.getMonthly(now.getFullYear(), now.getMonth() + 1).catch(() => null),
         ]);
@@ -72,6 +73,7 @@ function Overview() {
           customersCount: customers.length,
           newCustomersCount: newCustomers,
           lowStockCount: lowStock.length,
+          lowStockItems: lowStock,
           revenueTrend,
           recentSales,
         });
@@ -142,6 +144,129 @@ function Overview() {
             />
             <StatCard label="Low Stock Alerts" value={stats.lowStockCount} />
           </div>
+
+          {/* Low Stock Alerts Box */}
+          {stats.lowStockCount > 0 && (
+            <div
+              style={{
+                background: "rgba(255, 90, 61, 0.07)",
+                border: "1.5px solid rgba(255, 90, 61, 0.35)",
+                borderRadius: "8px",
+                padding: "20px",
+                marginTop: "24px",
+                display: "flex",
+                flexDirection: "column",
+                gap: "14px",
+                boxShadow: "0 4px 20px rgba(255, 90, 61, 0.08)",
+              }}
+            >
+              <style>{`
+                @keyframes shakeBell {
+                  0%, 100% { transform: rotate(0deg); }
+                  15% { transform: rotate(12deg); }
+                  30% { transform: rotate(-12deg); }
+                  45% { transform: rotate(8deg); }
+                  60% { transform: rotate(-8deg); }
+                  75% { transform: rotate(4deg); }
+                  90% { transform: rotate(-4deg); }
+                }
+                .bell-shake-anim {
+                  animation: shakeBell 2s infinite;
+                  transform-origin: top center;
+                }
+              `}</style>
+              
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  color: "#FF5A3D",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "12px",
+                    fontWeight: 700,
+                    fontSize: "17px",
+                  }}
+                >
+                  <Bell size={22} className="bell-shake-anim" style={{ color: "#FF5A3D" }} />
+                  <span>Low Stock Alert Notification</span>
+                </div>
+                <span
+                  style={{
+                    background: "#FF5A3D",
+                    color: "#fff",
+                    padding: "4px 12px",
+                    borderRadius: "20px",
+                    fontSize: "12.5px",
+                    fontWeight: 700,
+                  }}
+                >
+                  {stats.lowStockCount} Items Low
+                </span>
+              </div>
+              
+              <p style={{ color: "#FF5A3D", fontSize: "14.5px", fontWeight: 600, margin: 0 }}>
+                WARNING: The following products are currently at or below their reorder level thresholds:
+              </p>
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+                  gap: "12px",
+                  marginTop: "8px",
+                }}
+              >
+                {stats.lowStockItems.map((item) => (
+                  <div
+                    key={item.id}
+                    style={{
+                      background: "var(--card-bg)",
+                      border: "1px solid rgba(255, 90, 61, 0.25)",
+                      borderRadius: "6px",
+                      padding: "12px 16px",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      boxShadow: "0 2px 6px rgba(0,0,0,0.02)",
+                    }}
+                  >
+                    <div>
+                      <div style={{ fontWeight: 700, fontSize: "14px", color: "var(--text)" }}>
+                        {item.name}
+                      </div>
+                      <div style={{ fontSize: "12.5px", color: "var(--text-muted)", marginTop: "3px" }}>
+                        Category: {item.category || "General"}
+                      </div>
+                      <div style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "2.5px" }}>
+                        Reorder Threshold: <strong style={{ color: "var(--text)" }}>{item.reorderLevel}</strong>
+                      </div>
+                    </div>
+                    <div style={{ textAlign: "right" }}>
+                      <span
+                        style={{
+                          background: "rgba(255, 90, 61, 0.12)",
+                          color: "#FF5A3D",
+                          padding: "6px 12px",
+                          borderRadius: "6px",
+                          fontWeight: 700,
+                          fontSize: "13.5px",
+                          display: "inline-block",
+                        }}
+                      >
+                        Stock: {item.stockQty} left
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div
             style={{

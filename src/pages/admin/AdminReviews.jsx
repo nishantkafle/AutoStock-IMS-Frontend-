@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { reviewService } from "../../services/api";
+import Pagination from "../../components/Pagination";
 import {
   Alert,
   Badge,
@@ -12,12 +13,19 @@ export default function AdminReviews() {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [msg, setMsg] = useState({ text: "", ok: false });
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
 
   useEffect(() => {
     async function load() {
       try {
-        const res = await reviewService.getAll();
-        if (res.success) setReviews(res.data);
+        const res = await reviewService.getAll(page, 7);
+        if (res.success) {
+          setReviews(res.data);
+          setTotalPages(res.meta?.totalPages || 1);
+          setTotalCount(res.meta?.totalCount || 0);
+        }
       } catch {
         setMsg({ text: "Failed to load reviews", ok: false });
       } finally {
@@ -25,7 +33,7 @@ export default function AdminReviews() {
       }
     }
     load();
-  }, []);
+  }, [page]);
 
   return (
     <div>
@@ -109,6 +117,13 @@ export default function AdminReviews() {
             </tbody>
           </table>
         )}
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          totalCount={totalCount}
+          pageSize={7}
+          onPageChange={setPage}
+        />
       </div>
     </div>
   );

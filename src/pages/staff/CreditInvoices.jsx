@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { invoicesService } from "../../services/api";
+import Pagination from "../../components/Pagination";
 
 export default function CreditInvoices({ basePath }) {
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
 
   // Settlement Modal State
   const [showSettleModal, setShowSettleModal] = useState(false);
@@ -20,15 +24,15 @@ export default function CreditInvoices({ basePath }) {
 
   useEffect(() => {
     fetchCreditInvoices();
-  }, []);
+  }, [page]);
 
   async function fetchCreditInvoices() {
     try {
       setLoading(true);
-      const data = await invoicesService.getAll();
-      // Filter for Credit invoices that still have a balance
-      const creditInvoices = data.filter(inv => inv.paymentMethod === "Credit");
-      setInvoices(creditInvoices);
+      const res = await invoicesService.getAll(page, 7, "Credit");
+      setInvoices(res);
+      setTotalPages(res.totalPages || 1);
+      setTotalCount(res.totalCount || res.length);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to load credit invoices.");
     } finally {
@@ -182,6 +186,13 @@ export default function CreditInvoices({ basePath }) {
             </tbody>
           </table>
         )}
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          totalCount={totalCount}
+          pageSize={7}
+          onPageChange={setPage}
+        />
       </div>
 
       {/* Settlement Modal */}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAllCustomers, searchCustomers } from "../../services/customerService";
+import Pagination from "../../components/Pagination";
 
 export default function CustomerList() {
     const navigate = useNavigate();
@@ -8,16 +9,21 @@ export default function CustomerList() {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(true);
     const [keyword, setKeyword] = useState("");
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalCount, setTotalCount] = useState(0);
 
     useEffect(() => {
         fetchCustomers();
-    }, []);
+    }, [page]);
 
     async function fetchCustomers() {
         try {
             setLoading(true);
-            const result = await getAllCustomers();
+            const result = await getAllCustomers(page, 7);
             setCustomers(result.data || []);
+            setTotalPages(result.meta?.totalPages || 1);
+            setTotalCount(result.meta?.totalCount || 0);
         } catch (err) {
             setError("Failed to load customers");
         } finally {
@@ -189,6 +195,13 @@ export default function CustomerList() {
                             ))}
                         </tbody>
                     </table>
+                    <Pagination
+                        currentPage={page}
+                        totalPages={totalPages}
+                        totalCount={totalCount}
+                        pageSize={7}
+                        onPageChange={setPage}
+                    />
                 </div>
             )}
         </div>

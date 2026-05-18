@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { appointmentService } from "../../services/api";
+import Pagination from "../../components/Pagination";
 import {
   Btn,
   Alert,
@@ -24,12 +25,19 @@ export default function AppointmentsAdmin() {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [msg, setMsg] = useState({ text: "", ok: false });
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
 
   async function load() {
     setLoading(true);
     try {
-      const res = await appointmentService.getAll();
-      if (res.success) setAppointments(res.data);
+      const res = await appointmentService.getAll(page, 7);
+      if (res.success) {
+        setAppointments(res.data);
+        setTotalPages(res.meta?.totalPages || 1);
+        setTotalCount(res.meta?.totalCount || 0);
+      }
     } catch {
       setMsg({ text: "Failed to load appointments", ok: false });
     } finally {
@@ -39,7 +47,7 @@ export default function AppointmentsAdmin() {
 
   useEffect(() => {
     load();
-  }, []);
+  }, [page]);
 
   // Quick status change directly from the table row
   async function changeStatus(id, status) {
@@ -173,6 +181,13 @@ export default function AppointmentsAdmin() {
             </tbody>
           </table>
         )}
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          totalCount={totalCount}
+          pageSize={7}
+          onPageChange={setPage}
+        />
       </div>
     </div>
   );

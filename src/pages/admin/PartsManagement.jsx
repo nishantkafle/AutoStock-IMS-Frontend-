@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Package } from "lucide-react";
 import { partsService, vendorService } from "../../services/api";
+import Pagination from "../../components/Pagination";
 import Modal from "../../components/Modal";
 import {
   Field,
@@ -166,15 +167,22 @@ export default function PartsManagement() {
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState({ text: "", ok: false });
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
 
   async function load() {
     setLoading(true);
     try {
       const [partsRes, vendorsRes] = await Promise.all([
-        partsService.getAll(1, 100),
-        vendorService.getAll(),
+        partsService.getAll(page, 7),
+        vendorService.getAll(1, 1000),
       ]);
-      if (partsRes.success) setParts(partsRes.data);
+      if (partsRes.success) {
+        setParts(partsRes.data);
+        setTotalPages(partsRes.meta?.totalPages || 1);
+        setTotalCount(partsRes.meta?.totalCount || 0);
+      }
       if (Array.isArray(vendorsRes)) setVendors(vendorsRes);
       else if (vendorsRes?.success) setVendors(vendorsRes.data);
     } catch {
@@ -186,7 +194,7 @@ export default function PartsManagement() {
 
   useEffect(() => {
     load();
-  }, []);
+  }, [page]);
 
   async function handleAdd(form) {
     setSaving(true);
@@ -569,6 +577,13 @@ export default function PartsManagement() {
             </tbody>
           </table>
         )}
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          totalCount={totalCount}
+          pageSize={7}
+          onPageChange={setPage}
+        />
       </div>
 
       {/* Modals */}

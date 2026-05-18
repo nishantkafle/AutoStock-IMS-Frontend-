@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { partRequestService } from "../../services/api";
+import Pagination from "../../components/Pagination";
 import {
   Btn,
   Alert,
@@ -23,12 +24,19 @@ export default function PartRequestsAdmin() {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [msg, setMsg] = useState({ text: "", ok: false });
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
 
   async function load() {
     setLoading(true);
     try {
-      const res = await partRequestService.getAll();
-      if (res.success) setRequests(res.data);
+      const res = await partRequestService.getAll(page, 7);
+      if (res.success) {
+        setRequests(res.data);
+        setTotalPages(res.meta?.totalPages || 1);
+        setTotalCount(res.meta?.totalCount || 0);
+      }
     } catch {
       setMsg({ text: "Failed to load part requests", ok: false });
     } finally {
@@ -38,7 +46,7 @@ export default function PartRequestsAdmin() {
 
   useEffect(() => {
     load();
-  }, []);
+  }, [page]);
 
   async function changeStatus(id, status) {
     try {
@@ -167,6 +175,13 @@ export default function PartRequestsAdmin() {
             </tbody>
           </table>
         )}
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          totalCount={totalCount}
+          pageSize={7}
+          onPageChange={setPage}
+        />
       </div>
     </div>
   );

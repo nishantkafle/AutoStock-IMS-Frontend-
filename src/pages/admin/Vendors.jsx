@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { getAllVendors, createVendor, updateVendor, deleteVendor } from "../../services/vendorService";
+import Pagination from "../../components/Pagination";
 
 export default function Vendors() {
     const [vendors, setVendors] = useState([]);
@@ -7,6 +8,9 @@ export default function Vendors() {
     const [error, setError] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [editingVendor, setEditingVendor] = useState(null);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalCount, setTotalCount] = useState(0);
 
     const [formData, setFormData] = useState({
         name: "",
@@ -19,16 +23,20 @@ export default function Vendors() {
 
     useEffect(() => {
         fetchVendors();
-    }, []);
+    }, [page]);
 
     const fetchVendors = async () => {
         try {
             setLoading(true);
-            const data = await getAllVendors();
-            setVendors(data);
+            const result = await getAllVendors(page, 7);
+            setVendors(result.data || []);
+            setTotalPages(result.meta?.totalPages || 1);
+            setTotalCount(result.meta?.totalCount || 0);
             setError(null);
         } catch (err) {
-            setError(err.response?.data || "Failed to load vendors");
+            const errorData = err.response?.data;
+            const errorMsg = errorData?.message || (typeof errorData === 'string' ? errorData : "Failed to load vendors");
+            setError(errorMsg);
         } finally {
             setLoading(false);
         }
@@ -83,7 +91,9 @@ export default function Vendors() {
             fetchVendors();
             handleCloseModal();
         } catch (err) {
-            alert(err.response?.data || "Operation failed");
+            const errorData = err.response?.data;
+            const errorMsg = errorData?.message || (typeof errorData === 'string' ? errorData : "Operation failed");
+            alert(errorMsg);
         }
     };
 
@@ -93,7 +103,9 @@ export default function Vendors() {
                 await deleteVendor(id);
                 fetchVendors();
             } catch (err) {
-                alert(err.response?.data || "Failed to delete vendor");
+                const errorData = err.response?.data;
+                const errorMsg = errorData?.message || (typeof errorData === 'string' ? errorData : "Failed to delete vendor");
+                alert(errorMsg);
             }
         }
     };
@@ -202,6 +214,13 @@ export default function Vendors() {
                             </tbody>
                         </table>
                     </div>
+                    <Pagination
+                        currentPage={page}
+                        totalPages={totalPages}
+                        totalCount={totalCount}
+                        pageSize={7}
+                        onPageChange={setPage}
+                    />
                 </div>
             )}
 

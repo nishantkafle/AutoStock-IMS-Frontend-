@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { vendorService, partsService } from "../../services/api";
+import Pagination from "../../components/Pagination";
 import axios from "axios";
 
 const API = "https://localhost:7089/api";
@@ -10,7 +11,7 @@ function authHeader() {
 
 async function fetchInvoices(page = 1) {
   const res = await axios.get(
-    `${API}/purchaseinvoices?page=${page}&pageSize=10`,
+    `${API}/purchaseinvoices?page=${page}&pageSize=7`,
     { headers: authHeader() },
   );
   return res.data;
@@ -953,16 +954,22 @@ export default function PurchaseInvoices() {
   const [selected, setSelected] = useState(null);
   const [error, setError] = useState("");
   const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
 
   async function load() {
     setLoading(true);
     try {
       const [invRes, vRes, pRes] = await Promise.all([
         fetchInvoices(page),
-        vendorService.getAll(),
-        partsService.getAll(1, 100),
+        vendorService.getAll(1, 1000),
+        partsService.getAll(1, 1000),
       ]);
-      if (invRes.success) setInvoices(invRes.data);
+      if (invRes.success) {
+        setInvoices(invRes.data);
+        setTotalPages(invRes.meta?.totalPages || 1);
+        setTotalCount(invRes.meta?.totalCount || 0);
+      }
       if (Array.isArray(vRes)) setVendors(vRes);
       else if (vRes?.success) setVendors(vRes.data);
       if (pRes.success) setParts(pRes.data);
@@ -1209,60 +1216,14 @@ export default function PurchaseInvoices() {
             </tbody>
           </table>
         )}
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          totalCount={totalCount}
+          pageSize={7}
+          onPageChange={setPage}
+        />
       </div>
-
-      {invoices.length > 0 && (
-        <div
-          style={{
-            display: "flex",
-            gap: "8px",
-            marginTop: "16px",
-            justifyContent: "flex-end",
-          }}
-        >
-          <button
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-            disabled={page === 1}
-            style={{
-              background: "none",
-              border: "1px solid var(--border)",
-              color: "var(--text)",
-              padding: "6px 14px",
-              borderRadius: "4px",
-              fontSize: "13px",
-              cursor: page === 1 ? "not-allowed" : "pointer",
-              opacity: page === 1 ? 0.5 : 1,
-            }}
-          >
-            Prev
-          </button>
-          <span
-            style={{
-              padding: "6px 14px",
-              fontSize: "13px",
-              color: "var(--text-muted)",
-            }}
-          >
-            Page {page}
-          </span>
-          <button
-            onClick={() => setPage((p) => p + 1)}
-            disabled={invoices.length < 10}
-            style={{
-              background: "none",
-              border: "1px solid var(--border)",
-              color: "var(--text)",
-              padding: "6px 14px",
-              borderRadius: "4px",
-              fontSize: "13px",
-              cursor: invoices.length < 10 ? "not-allowed" : "pointer",
-              opacity: invoices.length < 10 ? 0.5 : 1,
-            }}
-          >
-            Next
-          </button>
-        </div>
-      )}
 
       {showCreate && (
         <InvoiceModal

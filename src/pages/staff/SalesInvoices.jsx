@@ -1,20 +1,26 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { invoicesService } from "../../services/api";
+import Pagination from "../../components/Pagination";
 
 export default function SalesInvoices() {
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
 
   useEffect(() => {
     fetchInvoices();
-  }, []);
+  }, [page]);
 
   async function fetchInvoices() {
+    setLoading(true);
     try {
-      const res = await invoicesService.getAll();
+      const res = await invoicesService.getAll(page, 7);
       setInvoices(res);
+      setTotalPages(res.totalPages || 1);
+      setTotalCount(res.totalCount || res.length);
     } catch (err) {
       console.error(err);
     } finally {
@@ -22,12 +28,11 @@ export default function SalesInvoices() {
     }
   }
 
-
   async function handleDeleteInvoice(id) {
     if (!window.confirm("Are you sure you want to delete this invoice? This action cannot be undone.")) return;
     try {
       await invoicesService.delete(id);
-      setInvoices(invoices.filter(inv => inv.id !== id));
+      fetchInvoices();
     } catch (err) {
       console.error("Failed to delete invoice", err);
       alert("Failed to delete invoice.");
@@ -157,6 +162,13 @@ export default function SalesInvoices() {
             )}
           </tbody>
         </table>
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          totalCount={totalCount}
+          pageSize={7}
+          onPageChange={setPage}
+        />
       </div>
 
     </div>

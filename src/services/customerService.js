@@ -12,9 +12,9 @@ export async function registerCustomer(data) {
 }
 
 // Feature 8: Get all customers
-export async function getAllCustomers() {
+export async function getAllCustomers(page = 1, pageSize = 7) {
   const token = localStorage.getItem("token");
-  const response = await axios.get(`${API}/customers`, {
+  const response = await axios.get(`${API}/customers?page=${page}&pageSize=${pageSize}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   return response.data;

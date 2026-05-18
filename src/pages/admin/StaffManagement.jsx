@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { staffService } from "../../services/api";
 import Modal from "../../components/Modal";
+import Pagination from "../../components/Pagination";
 import {
   Field,
   Btn,
@@ -81,6 +82,7 @@ function AddStaffForm({ onDone, onClose }) {
           gap: "10px",
           justifyContent: "flex-end",
           marginTop: "6px",
+          width: "100%",
         }}
       >
         <Btn variant="ghost" onClick={onClose}>
@@ -169,12 +171,19 @@ export default function StaffManagement() {
   const [showAdd, setShowAdd] = useState(false);
   const [editing, setEditing] = useState(null);
   const [error, setError] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
 
   async function load() {
     setLoading(true);
     try {
-      const res = await staffService.getAll();
-      if (res.success) setStaff(res.data);
+      const res = await staffService.getAll(page, 7);
+      if (res.success) {
+        setStaff(res.data);
+        setTotalPages(res.meta?.totalPages || 1);
+        setTotalCount(res.meta?.totalCount || 0);
+      }
     } catch {
       setError("Failed to load staff list");
     } finally {
@@ -184,7 +193,7 @@ export default function StaffManagement() {
 
   useEffect(() => {
     load();
-  }, []);
+  }, [page]);
 
   async function handleDeactivate(id) {
     if (!window.confirm("Deactivate this staff member?")) return;
@@ -308,6 +317,13 @@ export default function StaffManagement() {
             </tbody>
           </table>
         )}
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          totalCount={totalCount}
+          pageSize={7}
+          onPageChange={setPage}
+        />
       </div>
 
       {/* Add Staff modal */}

@@ -2,6 +2,48 @@ import axios from "axios";
 
 const API = "https://localhost:7089/api";
 
+// Global interceptor to transparently unpack PagedResult backend listings for frontend array compatibility
+axios.interceptors.response.use(
+  (response) => {
+    const rawData = response.data;
+    if (rawData) {
+      // Case 1: ApiResponse<PagedResult<T>>
+      if (
+        rawData.success === true &&
+        rawData.data &&
+        typeof rawData.data === "object" &&
+        Array.isArray(rawData.data.items)
+      ) {
+        response.data = {
+          ...rawData,
+          data: rawData.data.items,
+          meta: {
+            totalCount: rawData.data.totalCount,
+            pageNumber: rawData.data.pageNumber,
+            pageSize: rawData.data.pageSize,
+            totalPages: rawData.data.totalPages,
+          }
+        };
+      }
+      // Case 2: PagedResult<T> directly
+      else if (typeof rawData === "object" && Array.isArray(rawData.items)) {
+        const items = rawData.items;
+        Object.defineProperties(items, {
+          totalCount: { value: rawData.totalCount, enumerable: false },
+          pageNumber: { value: rawData.pageNumber, enumerable: false },
+          pageSize: { value: rawData.pageSize, enumerable: false },
+          totalPages: { value: rawData.totalPages, enumerable: false },
+        });
+        response.data = items;
+      }
+    }
+    return response;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 // Helper - gets token from localStorage and builds auth header
 function authHeader() {
   const token = localStorage.getItem("token");
@@ -10,8 +52,8 @@ function authHeader() {
 
 // STAFF SERVICE
 export const staffService = {
-  getAll: () =>
-    axios.get(`${API}/staff`, { headers: authHeader() }).then((r) => r.data),
+  getAll: (page = 1, pageSize = 7) =>
+    axios.get(`${API}/staff?page=${page}&pageSize=${pageSize}`, { headers: authHeader() }).then((r) => r.data),
 
   getById: (id) =>
     axios
@@ -36,7 +78,7 @@ export const staffService = {
 
 // PARTS SERVICE
 export const partsService = {
-  getAll: (page = 1, pageSize = 20) =>
+  getAll: (page = 1, pageSize = 7) =>
     axios
       .get(`${API}/parts?page=${page}&pageSize=${pageSize}`, {
         headers: authHeader(),
@@ -71,17 +113,17 @@ export const partsService = {
 
 // VENDOR SERVICE (needed for parts form dropdown)
 export const vendorService = {
-  getAll: () =>
-    axios.get(`${API}/vendors`, { headers: authHeader() }).then((r) => r.data),
+  getAll: (page = 1, pageSize = 7) =>
+    axios.get(`${API}/vendors?page=${page}&pageSize=${pageSize}`, { headers: authHeader() }).then((r) => r.data),
 };
 
 export const vehicleService = {
   getMine: () =>
     axios.get(`${API}/vehicles`, { headers: authHeader() }).then((r) => r.data),
 
-  getAll: () =>
+  getAll: (page = 1, pageSize = 7) =>
     axios
-      .get(`${API}/vehicles/all`, { headers: authHeader() })
+      .get(`${API}/vehicles/all?page=${page}&pageSize=${pageSize}`, { headers: authHeader() })
       .then((r) => r.data),
 
   add: (data) =>
@@ -102,9 +144,9 @@ export const vehicleService = {
 
 // CUSTOMER SERVICE
 export const customerService = {
-  getAll: () =>
+  getAll: (page = 1, pageSize = 7) =>
     axios
-      .get(`${API}/customers`, { headers: authHeader() })
+      .get(`${API}/customers?page=${page}&pageSize=${pageSize}`, { headers: authHeader() })
       .then((r) => r.data),
 };
 
@@ -115,9 +157,9 @@ export const appointmentService = {
       .get(`${API}/appointments/mine`, { headers: authHeader() })
       .then((r) => r.data),
 
-  getAll: () =>
+  getAll: (page = 1, pageSize = 7) =>
     axios
-      .get(`${API}/appointments`, { headers: authHeader() })
+      .get(`${API}/appointments?page=${page}&pageSize=${pageSize}`, { headers: authHeader() })
       .then((r) => r.data),
 
   book: (data) =>
@@ -146,9 +188,9 @@ export const partRequestService = {
       .get(`${API}/partrequests/mine`, { headers: authHeader() })
       .then((r) => r.data),
 
-  getAll: () =>
+  getAll: (page = 1, pageSize = 7) =>
     axios
-      .get(`${API}/partrequests`, { headers: authHeader() })
+      .get(`${API}/partrequests?page=${page}&pageSize=${pageSize}`, { headers: authHeader() })
       .then((r) => r.data),
 
   create: (data) =>
@@ -178,8 +220,8 @@ export const partRequestService = {
 
 // REVIEW SERVICE
 export const reviewService = {
-  getAll: () =>
-    axios.get(`${API}/reviews`, { headers: authHeader() }).then((r) => r.data),
+  getAll: (page = 1, pageSize = 7) =>
+    axios.get(`${API}/reviews?page=${page}&pageSize=${pageSize}`, { headers: authHeader() }).then((r) => r.data),
 
   getMine: () =>
     axios
@@ -215,8 +257,8 @@ export const profileService = {
 
 // INVOICES SERVICE
 export const invoicesService = {
-  getAll: () =>
-    axios.get(`${API}/invoices`, { headers: authHeader() }).then((r) => r.data),
+  getAll: (page = 1, pageSize = 7, paymentMethod = "") =>
+    axios.get(`${API}/invoices?page=${page}&pageSize=${pageSize}${paymentMethod ? `&paymentMethod=${paymentMethod}` : ""}`, { headers: authHeader() }).then((r) => r.data),
 
   create: (data) =>
     axios
